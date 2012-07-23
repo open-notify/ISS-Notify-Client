@@ -1,17 +1,22 @@
 import wx
 import views
+import data.locations
+
+LATITUDE_FORMAT   = "%0.6f"
+LONGITUDE_FORMAT  = "%0.6f"
+ALTITUDE_FORMAT   = "%0.0f"
 
 class Window(wx.Frame):
 
   def __init__(self, parent, title):
     wx.Frame.__init__(self, parent, title=title
-                      , size = (512, 300)
+                      , size = (400, 550)
                       , style = wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE)
 
     self.container  = wx.Panel(self)
     self.control    = self.container
     self.vbox       = wx.BoxSizer(wx.VERTICAL)
-    self.sections    = []
+    self.sections   = []
 
   def add_box(self, label):
     widget    = wx.Panel(self.container)
@@ -23,7 +28,7 @@ class Window(wx.Frame):
 
     boxsizer.Add(sizer, flag=wx.LEFT|wx.TOP|wx.EXPAND)
     
-    sizer.AddGrowableCol(1)
+    sizer.AddGrowableCol(2)
     #widget.SetSizerAndFit(sizer)
     
     wrapper.Add(boxsizer,flag=wx.ALL|wx.EXPAND)
@@ -31,25 +36,82 @@ class Window(wx.Frame):
     self.sections.append(widget)
     return (widget, sizer)
 
-  def add_textinfo(self, box, row, label, units):
-    a = 45;
+  def add_textbox(self, box, row, label, units):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
-    box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.LEFT|wx.BOTTOM, border=5)
-    box[1].Add(wx.TextCtrl(box[0]), pos=(row, 1), flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
+    info      = wx.TextCtrl(box[0])
+    info.Disable()
+    units     = wx.StaticText(box[0], label=units, style=wx.ALIGN_CENTRE)
+    
+    box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    box[1].Add(info,      pos=(row, 1))
+    box[1].Add(units,     pos=(row, 2), flag=wx.TOP|wx.BOTTOM, border=5)
+    
+    return info
+  
+  def add_button(self, box, row, label, callback):
+    button = wx.Button(box[0], 1, label)
+    box[1].Add(button, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    
+    self.Bind(wx.EVT_BUTTON, callback, id=1)
+    
+    return button
+  
+  def add_dropdown(self, box, row, label):
+    labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
+    combo     = wx.ComboBox(box[0])
+    
+    box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    box[1].Add(combo,     pos=(row, 1), span=(1,2), flag=wx.TOP|wx.BOTTOM|wx.EXPAND, border=5)
 
+    return combo
+  
+  def add_textinfo(self, box, row, label):
+    labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
+    info      = wx.StaticText(box[0])
+    
+    box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    box[1].Add(info,      pos=(row, 1), flag=wx.TOP|wx.BOTTOM, border=5)
+    
+    return info
+  
   def add_widgets(self):
     for section in self.sections:
-      self.vbox.Add(section, proportion=1, flag=wx.ALL|wx.EXPAND, border=0)
+      self.vbox.Add(section, flag=wx.ALL|wx.EXPAND, border=10)
     
     self.container.SetSizer(self.vbox)
     
     self.Centre()
     self.Show(True)
 
-class Application():
-  def run(self):
-    app   = wx.App()
-    main  = views.MainWindow()
+  def color(self):
+    """display the colour dialog and select"""
+    dlg = wx.ColourDialog(self)
+    # get the full colour dialog
+    # default is False and gives the abbreviated version
+    dlg.GetColourData().SetChooseFull(True)
+    if dlg.ShowModal() == wx.ID_OK:
+        data = dlg.GetColourData()
+        # gives red, green, blue tuple (r, g, b)
+        # each rgb value has a range of 0 to 255
+        rgb = data.GetColour().Get()
+        #s = 'The selected colour (r, g, b) = %s' % str(rgb)
+        #self.label.SetLabel(s)
+        # set the panel's color and refresh
+        #self.SetBackgroundColour(rgb)
+        #self.Refresh()
+    dlg.Destroy()
+    return rgb
     
-    app.SetTopWindow(main.window)
-    app.MainLoop()
+class Application():
+
+  def __init__(self):
+    self.app  = wx.App()
+    
+  def run(self):
+    self.app.SetTopWindow(self.main.window)
+    self.app.MainLoop()
+
+class ApplicationData():
+  
+  def __init__(self):
+    self.location = data.locations.Location()
