@@ -17,6 +17,7 @@ class MainWindow(object):
     # Device
     self.device_box     = self.window.add_box("Device")
     self.device_status  = self.window.add_textinfo(self.device_box, 0, "Status:")
+    self.connect_btn    = self.window.add_button(self.device_box, 1, "Connect", self.connect_press)
     
     # Location
     self.location_box   = self.window.add_box("Location")
@@ -27,20 +28,33 @@ class MainWindow(object):
     
     # Passes
     self.time_box       = self.window.add_box("ISS Passes")
-    self.current_time   = self.window.add_textinfo(self.time_box, 0, "Time now")
+    self.current_time   = self.window.add_textinfo(self.time_box, 0, "Next Pass:")
+    self.get_pass_btn    = self.window.add_button(self.time_box, 1, "Get Next Pass", self.get_pass_press)
     
-    
+    # TEST 
     self.test_box       = self.window.add_box("Testing")
     self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
 
+  def connect_press(self, click_arg):
+    self.control.connect()
+  
   def blink_press(self, click_arg):
     color = self.window.color()
     self.control.blink(color)
 
+  def get_pass_press(self, click_arg):
+    self.control.get_next_pass()
+
   def update_view(self):
  
     # Device 
-    self.device_status.SetLabel("Not Connected")
+    if self.model.device_connected:
+      self.device_status.SetLabel("Connected" + self.model.device_battery_message)
+      self.connect_btn.SetLabel("...")
+      self.blink_btn.Enable()
+    else:
+      self.device_status.SetLabel("Not Connected")
+      self.blink_btn.Disable()
  
     # Location
     loc = self.model.location
@@ -49,3 +63,6 @@ class MainWindow(object):
     self.current_lat.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
     self.current_lon.SetValue(framework.LONGITUDE_FORMAT % loc.longitude)
     self.current_alt.SetValue(framework.ALTITUDE_FORMAT  % loc.altitude)
+    
+    # Passes
+    self.current_time.SetLabel(self.model.next_pass)

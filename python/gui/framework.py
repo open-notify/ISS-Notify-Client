@@ -49,10 +49,11 @@ class Window(wx.Frame):
     return info
   
   def add_button(self, box, row, label, callback):
-    button = wx.Button(box[0], 1, label)
+    button    = wx.Button(box[0], label=label)
+    button_id = button.GetId()
     box[1].Add(button, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
     
-    self.Bind(wx.EVT_BUTTON, callback, id=1)
+    self.Bind(wx.EVT_BUTTON, callback, id=button_id)
     
     return button
   
@@ -115,3 +116,6 @@ class ApplicationData():
   
   def __init__(self):
     self.location = data.locations.Location()
+    self.device_connected = False
+    self.device_battery_message = ""
+    self.next_pass = ""

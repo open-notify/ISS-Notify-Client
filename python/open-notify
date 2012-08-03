@@ -2,6 +2,8 @@
 import gui.views
 import gui.framework
 import data.locations
+import data.web
+import device.iss_notify
 import serial
 import random
 
@@ -9,20 +11,36 @@ class OpenNotify:
 
   def __init__(self):
   
-    self.app   = gui.framework.Application()
-    self.state = gui.framework.ApplicationData()
+    self.app    = gui.framework.Application()
+    self.state  = gui.framework.ApplicationData()
+    self.device = device.iss_notify.ISSNotify()
+    self.api    = data.web.OpenNotifyAPI()
 
     loc = data.locations.Location()
     loc.name = "Portland, OR"
     loc.latitude = 45.51200
     loc.longitude = -122.631007
-    loc.altitude = 150.0
+    loc.altitude = 150
     self.state.location = loc
 
     self.view  = gui.views.MainWindow(self, self.state)
     self.app.main = self.view
 
     self.app.run()
+
+  def connect(self):
+    self.device.connect()
+    self.device.get_battery_status()
+    
+    self.state.device_connected       = self.device.conneced
+    self.state.device_battery_message = " - " + self.device.battery_status
+    
+    self.view.update_view()
+
+  def get_next_pass(self):
+    self.state.next_pass = self.api.get_pass(self.state.location)
+    
+    self.view.update_view()
 
   def blink(self, color):
     
@@ -58,7 +76,6 @@ class OpenNotify:
     c = r + (g<<4) + (b<<8)
     
     return c
-    
 
 if __name__ == "__main__":
     run = OpenNotify()
