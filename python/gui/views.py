@@ -34,6 +34,8 @@ class MainWindow(object):
     # TEST 
     self.test_box       = self.window.add_box("Testing")
     self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
+    self.read_clock_btn = self.window.add_button(self.test_box, 1, "Read Clock", self.read_clock_press)
+    self.set_clock_btn  = self.window.add_button(self.test_box, 2, "Set Clock", self.set_clock_press)
 
   def connect_press(self, click_arg):
     self.control.connect()
@@ -41,6 +43,12 @@ class MainWindow(object):
   def blink_press(self, click_arg):
     color = self.window.color()
     self.control.blink(color)
+
+  def read_clock_press(self, click_arg):
+    self.control.read_clock()
+
+  def set_clock_press(self, click_arg):
+    self.control.set_clock()
 
   def get_pass_press(self, click_arg):
     self.control.get_next_pass()

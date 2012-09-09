@@ -42,6 +42,12 @@ class OpenNotify:
     
     self.view.update_view()
 
+  def read_clock(self):
+    self.device.read_time()
+
+  def set_clock(self):
+    self.device.set_time()
+
   def blink(self, color):
     
     c = self.rgb2device(color)
