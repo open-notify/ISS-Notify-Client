@@ -8,9 +8,9 @@ ALTITUDE_FORMAT   = "%0.0f"
 
 class Window(wx.Frame):
 
-  def __init__(self, parent, title):
+  def __init__(self, parent, title, size):
     wx.Frame.__init__(self, parent, title=title
-                      , size = (400, 550)
+                      , size = size
                       , style = wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE)
 
     self.container  = wx.Panel(self)
@@ -115,7 +115,8 @@ class Application():
 class ApplicationData():
   
   def __init__(self):
-    self.location = data.locations.Location()
-    self.device_connected = False
-    self.device_battery_message = ""
-    self.next_pass = ""
+    self.location                   = data.locations.Location()
+    self.device_connected           = False
+    self.device_battery_message     = ""
+    self.next_pass                  = ""
+    self.all_locations              = []

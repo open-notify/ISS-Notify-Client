@@ -16,12 +16,9 @@ class OpenNotify:
     self.device = device.iss_notify.ISSNotify()
     self.api    = data.web.OpenNotifyAPI()
 
-    loc = data.locations.Location()
-    loc.name = "Portland, OR"
-    loc.latitude = 45.51200
-    loc.longitude = -122.631007
-    loc.altitude = 150
-    self.state.location = loc
+    location_helper = data.locations.Locations()
+    self.state.location = location_helper.locations[0]
+    self.state.all_locations = location_helper.locations
 
     self.view  = gui.views.MainWindow(self, self.state)
     self.app.main = self.view
@@ -47,6 +44,15 @@ class OpenNotify:
 
   def set_clock(self):
     self.device.set_time()
+
+  def clear_alarm(self):
+    self.device.clear_alarm0()
+  
+  def set_alarm(self):
+    self.device.set_alarm()
+
+  def get_ms(self):
+    self.device.get_ms()
 
   def blink(self, color):
     

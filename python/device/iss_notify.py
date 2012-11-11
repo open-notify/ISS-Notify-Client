@@ -93,7 +93,7 @@ class ISSNotify:
       ser = self.claim_device()
       
       comp_time_utc = datetime.datetime.utcnow()
-      tstring = comp_time_utc.strftime('Y%yM%mD%dH%HM%MS%S')
+      tstring = comp_time_utc.strftime('TY%yM%mD%dH%HM%MS%S')
       ser.write(tstring)
       print tstring
       
@@ -101,4 +101,38 @@ class ISSNotify:
       ser.close()
     except:
       self.read_fail()
- 
+
+  def set_alarm(self):
+    try:
+      ser = self.claim_device()
+      
+      alarm = datetime.datetime.utcnow()
+      alarm = alarm + datetime.timedelta(seconds=5)
+      tstring = alarm.strftime('AY%yM%mD%dH%HM%MS%S')
+      ser.write(tstring)
+      print tstring
+      
+      print ser.readline()
+      ser.close()
+    except:
+      self.read_fail()
+
+  def clear_alarm0(self):
+    try:
+      ser = self.claim_device()
+      print "ra?"
+      ser.write("ra?")
+      print ser.readline()
+      ser.close()
+    except:
+      self.read_fail()
+
+  def get_ms(self):
+    try:
+      ser = self.claim_device()
+      print "ms?"
+      ser.write("ms?")
+      print ser.readline()
+      ser.close()
+    except:
+      self.read_fail()
