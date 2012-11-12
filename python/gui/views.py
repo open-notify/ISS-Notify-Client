@@ -3,7 +3,7 @@ import framework
 class MainWindow(object):
   
   def __init__(self, controller, model):
-    self.window = framework.Window(None, "ISS Notify Update", (400,750))
+    self.window = framework.Window(None, "ISS Notify Update", (420,750))
     self.model = model
     self.control = controller
     
@@ -21,7 +21,7 @@ class MainWindow(object):
     
     # Location
     self.location_box   = self.window.add_box("Location")
-    self.current_loc    = self.window.add_dropdown(self.location_box, 0, "My Location:")
+    self.current_loc    = self.window.add_dropdown(self.location_box, 0, "My Location:", self.pick_loc)
     self.current_lat    = self.window.add_textbox(self.location_box,  1, "Latitude:",  "deg")
     self.current_lon    = self.window.add_textbox(self.location_box,  2, "Longitude:", "deg")
     self.current_alt    = self.window.add_textbox(self.location_box,  3, "Altitude:", "meters")
@@ -42,13 +42,17 @@ class MainWindow(object):
     self.get_ms_btn     = self.window.add_button(self.test_box, 5, "Get ms", self.get_ms_press)
     
     
-
+  # Events
+  # ======
   def connect_press(self, click_arg):
     self.control.connect()
 
-  def manage_loc_press(self, click_arg):
-    popup = ManageLocations()
+  def pick_loc(self, arg):
+    pass
 
+  def manage_loc_press(self, click_arg):
+    self.control.manage_locations()
+    
   def blink_press(self, click_arg):
     color = self.window.color()
     self.control.blink(color)
@@ -99,19 +103,58 @@ class MainWindow(object):
 #======================================================================================
 class ManageLocations(object):
 
-    def __init__(self):
-        self.window = framework.Window(None, "Manage Locations", (600,400))
+    def __init__(self, controller, model):
+        self.window = framework.Window(None, "Manage Locations", (600,500))
+        self.model = model
+        self.controller = controller
         self.init_UI()
         self.update_view()
         self.window.add_widgets()
 
     def init_UI(self):
         # Pick Location
-        self.loc_pick_box       = self.window.add_box("Edit Location")
-        self.current_loc    = self.window.add_dropdown(self.loc_pick_box, 0, "Location:")
+        self.loc_pick_box       = self.window.add_box("")
+        self.current_loc        = self.window.add_dropdown(self.loc_pick_box, 0, "Location:", self.pick_loc)
+        self.new_loc_button     = self.window.add_button(self.loc_pick_box, 1, "New Location", self.add_new)
 
         # Edit Location
         self.loc_edit_box       = self.window.add_box("Edit Location")
+        self.loc_name_field     = self.window.add_textbox(self.loc_edit_box, 0, "Name:", "")
+        self.loc_lat_field      = self.window.add_textbox(self.loc_edit_box, 1, "Latitude:", "deg")
+        self.loc_lon_field      = self.window.add_textbox(self.loc_edit_box, 2, "Longitude:", "deg")
+        self.loc_alt_field      = self.window.add_textbox(self.loc_edit_box, 3, "Latitdue:", "meters")
+        self.del_loc_button     = self.window.add_button(self.loc_edit_box, 4, "Delete this location", self.del_location)
+
+        # Map
+        self.map_box            = self.window.add_box("Map")
+
+        # Save
+        self.save_box            = self.window.add_box("Save Locations")
+        self.save_button         = self.window.add_button(self.save_box, 0, "Save", self.save_press)
 
     def update_view(self):
+        loc = self.model.location
+    
+        self.current_loc.Clear()
+        for location in self.model.all_locations:
+            self.current_loc.Append(location.name)
+        self.current_loc.SetValue(loc.name)
+        self.loc_name_field.SetValue(loc.name)
+        self.loc_lat_field.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
+        self.loc_lon_field.SetValue(framework.LONGITUDE_FORMAT % loc.longitude)
+        self.loc_alt_field.SetValue(framework.ALTITUDE_FORMAT  % loc.altitude)
+
+
+    # Events
+    #=======
+    def save_press(self, click_arg):
+        pass
+
+    def add_new(self, click_arg):
+        pass
+
+    def pick_loc(self, arg):
+        self.controller.update_location(self.current_loc.GetValue())
+
+    def del_location(self, click_arg):
         pass

@@ -38,8 +38,8 @@ class Window(wx.Frame):
 
   def add_textbox(self, box, row, label, units):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
-    info      = wx.TextCtrl(box[0])
-    info.Disable()
+    info      = wx.TextCtrl(box[0], size=(200,25))
+    #info.Disable()
     units     = wx.StaticText(box[0], label=units, style=wx.ALIGN_CENTRE)
     
     box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
@@ -57,12 +57,14 @@ class Window(wx.Frame):
     
     return button
   
-  def add_dropdown(self, box, row, label):
+  def add_dropdown(self, box, row, label, callback):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
     combo     = wx.ComboBox(box[0])
     
     box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
     box[1].Add(combo,     pos=(row, 1), span=(1,2), flag=wx.TOP|wx.BOTTOM|wx.EXPAND, border=5)
+
+    self.Bind(wx.EVT_COMBOBOX, callback)
 
     return combo
   

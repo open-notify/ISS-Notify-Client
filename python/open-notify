@@ -21,6 +21,7 @@ class OpenNotify:
     self.state.all_locations = location_helper.locations
 
     self.view  = gui.views.MainWindow(self, self.state)
+    self.loc_view = None
     self.app.main = self.view
 
     self.app.run()
@@ -38,6 +39,21 @@ class OpenNotify:
     self.state.next_pass = self.api.get_pass(self.state.location)
     
     self.view.update_view()
+
+  def manage_locations(self): 
+    popup = gui.views.ManageLocations(self, self.state)
+    self.loc_view = popup
+
+
+  def update_location(self, name):
+    for l in self.state.all_locations:
+        if name == l.name:
+            self.state.location = l
+            self.view.update_view()
+            if self.loc_view:
+                self.loc_view.update_view()
+
+  #===================================================================
 
   def read_clock(self):
     self.device.read_time()
