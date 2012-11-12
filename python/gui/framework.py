@@ -8,7 +8,7 @@ ALTITUDE_FORMAT   = "%0.0f"
 
 class Window(wx.Frame):
 
-  def __init__(self, parent, title, size):
+  def __init__(self, parent, title, size, onclose=None):
     wx.Frame.__init__(self, parent, title=title
                       , size = size
                       , style = wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE)
@@ -17,6 +17,9 @@ class Window(wx.Frame):
     self.control    = self.container
     self.vbox       = wx.BoxSizer(wx.VERTICAL)
     self.sections   = []
+    if onclose:
+        self.close_callback = onclose
+        self.Bind(wx.EVT_CLOSE, self.onclose)
 
   def add_box(self, label):
     widget    = wx.Panel(self.container)
@@ -104,6 +107,10 @@ class Window(wx.Frame):
         #self.Refresh()
     dlg.Destroy()
     return rgb
+
+  def onclose(self, arg):
+    self.close_callback()
+    self.Destroy()
     
 class Application():
 

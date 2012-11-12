@@ -48,7 +48,7 @@ class MainWindow(object):
     self.control.connect()
 
   def pick_loc(self, arg):
-    pass
+        self.control.update_location(self.current_loc.GetValue())
 
   def manage_loc_press(self, click_arg):
     self.control.manage_locations()
@@ -104,9 +104,9 @@ class MainWindow(object):
 class ManageLocations(object):
 
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "Manage Locations", (600,500))
+        self.window = framework.Window(None, "Manage Locations", (600,500), onclose=self.close)
         self.model = model
-        self.controller = controller
+        self.control = controller
         self.init_UI()
         self.update_view()
         self.window.add_widgets()
@@ -154,7 +154,10 @@ class ManageLocations(object):
         pass
 
     def pick_loc(self, arg):
-        self.controller.update_location(self.current_loc.GetValue())
+        self.control.update_location(self.current_loc.GetValue())
 
     def del_location(self, click_arg):
         pass
+
+    def close(self):
+        self.control.loc_view = None
