@@ -124,7 +124,7 @@ class Application():
 class ApplicationData():
   
   def __init__(self):
-    self.location                   = data.locations.Location()
+    self.location                   = {}
     self.device_connected           = False
     self.device_battery_message     = ""
     self.next_pass                  = ""

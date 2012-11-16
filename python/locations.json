@@ -1,0 +1,10 @@
+{"locations": [
+     {"name": "Portland, OR", "latitude": 45.51200, "longitude": -122.631007, "alt": 47.2}
+    ,{"name": "New York, NY", "latitude": 40.6734, "longitude": -73.9767, "alt": 30}
+    ,{"name": "London, UK", "latitude": 51.58297, "longitude": -0.02131, "alt": 24}
+    ,{"name": "Vancouver, BC", "latitude": 49.24594, "longitude": -123.1189, "alt": 80}
+    ,{"name": "San Fransisco, CA", "latitude": 37.75875, "longitude": -122.42171, "alt": 20}
+    ,{"name": "Tokyo, Japan", "latitude": 35.68733, "longitude": 139.757911, "alt": 10}
+    ,{"name": "Houston, TX", "latitude": 29.5623897563, "longitude": -95.092018247, "alt": 4.6}
+    ,{"name": "Kennedy Space Center, FL", "latitude": 28.58107353430, "longitude": -80.64525425630, "alt": 0.74}
+]}

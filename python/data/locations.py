@@ -8,15 +8,26 @@ class Locations():
 
     def build_list(self):
         # Built in location list
-        data = self.read_list('data/locations.json')
+        data = self.read_list('locations.json')
         if data:
             for loc in data:
-                l = Location()
+                l = Location(len(self.locations))
                 l.name      = loc['name']
                 l.latitude  = loc['latitude']
                 l.longitude = loc['longitude']
                 l.altitude  = loc['alt']
                 self.locations.append(l)
+
+    def save(self):
+        data = {'locations': []}
+        for loc in self.locations:
+            l = {}
+            loc['name']         = loc.name
+            loc['latitude']     = loc.latitude
+            loc['longitude']    = loc.longitude
+            loc['alt']          = loc.altitude
+            data['locations'].append(l)
+        self.save_list('locations.json', data)
 
     def read_list(self, filename):
         try:
@@ -24,10 +35,21 @@ class Locations():
             data = json.loads(f_in.read())
             return data['locations']
         except:
+            #TODO: Handle exception
             pass
 
+    def save_list(self, filename, data):
+        try:
+            f_out = open(filename, 'w')
+            f_out.write(json.dumps(data))
+        except:
+            #TODO: Handle exception
+            pass
+
+
 class Location():
-  def __init__(self):
+  def __init__(self, id):
+    self.id         = id
     self.name       = ""
     self.latitude   = 0.0
     self.longitude  = 0.0

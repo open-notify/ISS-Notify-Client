@@ -144,11 +144,21 @@ class ManageLocations(object):
         self.loc_lon_field.SetValue(framework.LONGITUDE_FORMAT % loc.longitude)
         self.loc_alt_field.SetValue(framework.ALTITUDE_FORMAT  % loc.altitude)
 
-
     # Events
     #=======
     def save_press(self, click_arg):
-        pass
+        if self.validate():
+            current = {}
+            current['id']        = self.model.location.id
+            current['name']      = self.loc_name_field.GetValue()
+            current['latitude']  = self.loc_lat_field.GetValue()
+            current['longitude'] = self.loc_lon_field.GetValue()
+            current['altitude']  = self.loc_alt_field.GetValue()
+            self.control.update_locations(current)
+
+    def validate(self):
+        #TODO: Validate the input fields
+        return True
 
     def add_new(self, click_arg):
         pass

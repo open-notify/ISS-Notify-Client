@@ -53,6 +53,11 @@ class OpenNotify:
             if self.loc_view:
                 self.loc_view.update_view()
 
+
+  def update_locations(self, newdata):
+    
+    print newdata
+
   #===================================================================
 
   def read_clock(self):
