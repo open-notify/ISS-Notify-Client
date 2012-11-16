@@ -22,10 +22,10 @@ class Locations():
         data = {'locations': []}
         for loc in self.locations:
             l = {}
-            loc['name']         = loc.name
-            loc['latitude']     = loc.latitude
-            loc['longitude']    = loc.longitude
-            loc['alt']          = loc.altitude
+            l['name']         = loc.name
+            l['latitude']     = loc.latitude
+            l['longitude']    = loc.longitude
+            l['alt']          = loc.altitude
             data['locations'].append(l)
         self.save_list('locations.json', data)
 
@@ -41,7 +41,7 @@ class Locations():
     def save_list(self, filename, data):
         try:
             f_out = open(filename, 'w')
-            f_out.write(json.dumps(data))
+            f_out.write(json.dumps(data, sort_keys=True, indent=2))
         except:
             #TODO: Handle exception
             pass

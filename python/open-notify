@@ -16,9 +16,9 @@ class OpenNotify:
     self.device = device.iss_notify.ISSNotify()
     self.api    = data.web.OpenNotifyAPI()
 
-    location_helper = data.locations.Locations()
-    self.state.location = location_helper.locations[0]
-    self.state.all_locations = location_helper.locations
+    self.locations = data.locations.Locations()
+    self.state.location = self.locations.locations[0]
+    self.state.all_locations = self.locations.locations
 
     self.view  = gui.views.MainWindow(self, self.state)
     self.loc_view = None
@@ -55,8 +55,22 @@ class OpenNotify:
 
 
   def update_locations(self, newdata):
+    # Update state
+    self.state.location.name      = newdata['name']
+    self.state.location.latitude  = newdata['latitude']
+    self.state.location.longitude = newdata['longitude']
+    self.state.location.altitude  = newdata['altitude']
+    self.state.all_locations[newdata['id']] = self.state.location    
+
+    # Update saved locations on disk
+    self.locations.locations[newdata['id']] = self.state.location
+    self.locations.save()
     
-    print newdata
+    # Push updates to screen
+    self.view.update_view()
+    if self.loc_view:
+        self.loc_view.update_view()
+
 
   #===================================================================
 

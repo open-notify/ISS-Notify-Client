@@ -151,13 +151,26 @@ class ManageLocations(object):
             current = {}
             current['id']        = self.model.location.id
             current['name']      = self.loc_name_field.GetValue()
-            current['latitude']  = self.loc_lat_field.GetValue()
-            current['longitude'] = self.loc_lon_field.GetValue()
-            current['altitude']  = self.loc_alt_field.GetValue()
+            current['latitude']  = float(self.loc_lat_field.GetValue())
+            current['longitude'] = float(self.loc_lon_field.GetValue())
+            current['altitude']  =   int(float(self.loc_alt_field.GetValue()))
             self.control.update_locations(current)
 
     def validate(self):
-        #TODO: Validate the input fields
+        #TODO: do something about fixing fields
+        try:
+            float(self.loc_lat_field.GetValue())
+        except:
+            return False
+        try:
+            float(self.loc_lon_field.GetValue())
+        except:
+            return False
+        try:
+            int(float(self.loc_alt_field.GetValue()))
+        except:
+            return False
+
         return True
 
     def add_new(self, click_arg):
