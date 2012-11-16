@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import framework
 
 class MainWindow(object):
@@ -22,15 +23,15 @@ class MainWindow(object):
     # Location
     self.location_box   = self.window.add_box("Location")
     self.current_loc    = self.window.add_dropdown(self.location_box, 0, "My Location:", self.pick_loc)
-    self.current_lat    = self.window.add_textbox(self.location_box,  1, "Latitude:",  "deg")
-    self.current_lon    = self.window.add_textbox(self.location_box,  2, "Longitude:", "deg")
-    self.current_alt    = self.window.add_textbox(self.location_box,  3, "Altitude:", "meters")
+    self.current_lat    = self.window.add_textinfo(self.location_box, 1, "Latitude:")
+    self.current_lon    = self.window.add_textinfo(self.location_box, 2, "Longitude:")
+    self.current_alt    = self.window.add_textinfo(self.location_box, 3, "Altitude:")
     self.manage_loc     = self.window.add_button(self.location_box,   4, "Manage Locations", self.manage_loc_press)
     
     # Passes
     self.time_box       = self.window.add_box("ISS Passes")
     self.current_time   = self.window.add_textinfo(self.time_box, 0, "Next Pass:")
-    self.get_pass_btn    = self.window.add_button(self.time_box, 1, "Get Next Pass", self.get_pass_press)
+    self.get_pass_btn   = self.window.add_button(self.time_box, 1, "Get Next Pass", self.get_pass_press)
     
     # TEST 
     self.test_box       = self.window.add_box("Testing")
@@ -93,9 +94,10 @@ class MainWindow(object):
     for location in self.model.all_locations:
         self.current_loc.Append(location.name)
     self.current_loc.SetValue(loc.name)
-    self.current_lat.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
-    self.current_lon.SetValue(framework.LONGITUDE_FORMAT % loc.longitude)
-    self.current_alt.SetValue(framework.ALTITUDE_FORMAT  % loc.altitude)
+
+    self.current_lat.SetLabel(framework.LATITUDE_FORMAT  % loc.latitude  +u"\xb0 N")
+    self.current_lon.SetLabel(framework.LONGITUDE_FORMAT % loc.longitude +u"\xb0 E")
+    self.current_alt.SetLabel(framework.ALTITUDE_FORMAT  % loc.altitude  +u" meters")
     
     # Passes
     self.current_time.SetLabel(self.model.next_pass)
@@ -120,8 +122,8 @@ class ManageLocations(object):
         # Edit Location
         self.loc_edit_box       = self.window.add_box("Edit Location")
         self.loc_name_field     = self.window.add_textbox(self.loc_edit_box, 0, "Name:", "")
-        self.loc_lat_field      = self.window.add_textbox(self.loc_edit_box, 1, "Latitude:", "deg")
-        self.loc_lon_field      = self.window.add_textbox(self.loc_edit_box, 2, "Longitude:", "deg")
+        self.loc_lat_field      = self.window.add_textbox(self.loc_edit_box, 1, "Latitude:", u"\xb0 N")
+        self.loc_lon_field      = self.window.add_textbox(self.loc_edit_box, 2, "Longitude:", u"\xb0 E")
         self.loc_alt_field      = self.window.add_textbox(self.loc_edit_box, 3, "Latitdue:", "meters")
         self.del_loc_button     = self.window.add_button(self.loc_edit_box, 4, "Delete this location", self.del_location)
 

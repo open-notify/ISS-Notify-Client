@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 import wx
 import views
 import data.locations
 
-LATITUDE_FORMAT   = "%0.6f"
-LONGITUDE_FORMAT  = "%0.6f"
+LATITUDE_FORMAT   = "%11.6f"
+LONGITUDE_FORMAT  = "%11.6f"
 ALTITUDE_FORMAT   = "%0.0f"
 
 class Window(wx.Frame):
@@ -74,7 +75,11 @@ class Window(wx.Frame):
   def add_textinfo(self, box, row, label):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
     info      = wx.StaticText(box[0])
+
+    font1 = wx.Font(10, wx.TELETYPE, wx.NORMAL, wx.NORMAL, False)
+    info.SetFont(font1)
     
+
     box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
     box[1].Add(info,      pos=(row, 1), flag=wx.TOP|wx.BOTTOM, border=5)
     

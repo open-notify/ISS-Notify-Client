@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# -*- encoding: utf-8 -*-
+
 import gui.views
 import gui.framework
 import data.locations
