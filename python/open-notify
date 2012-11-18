@@ -38,7 +38,7 @@ class OpenNotify:
     self.view.update_view()
 
   def get_next_pass(self):
-    self.state.next_pass = self.api.get_pass(self.state.location)
+    self.state.next_pass = self.api.get_next_pass(self.state.location)
     
     self.view.update_view()
 
@@ -75,21 +75,8 @@ class OpenNotify:
 
 
   #===================================================================
-
-  def read_clock(self):
-    self.device.read_time()
-
   def set_clock(self):
     self.device.set_time()
-
-  def clear_alarm(self):
-    self.device.clear_alarm0()
-  
-  def set_alarm(self):
-    self.device.set_alarm()
-
-  def get_ms(self):
-    self.device.get_ms()
 
   def blink(self, color):
     

@@ -35,13 +35,7 @@ class MainWindow(object):
     
     # TEST 
     self.test_box       = self.window.add_box("Testing")
-    self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
-    self.read_clock_btn = self.window.add_button(self.test_box, 1, "Read Clock", self.read_clock_press)
-    self.set_clock_btn  = self.window.add_button(self.test_box, 2, "Set Clock", self.set_clock_press)
-    self.clear_alarm_btn= self.window.add_button(self.test_box, 3, "Clear Alarms", self.clear_alarm_press)
-    self.set_alarm_btn  = self.window.add_button(self.test_box, 4, "Set Alarm", self.set_alarm_press)
-    self.get_ms_btn     = self.window.add_button(self.test_box, 5, "Get ms", self.get_ms_press)
-    
+    self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)    
     
   # Events
   # ======
@@ -58,23 +52,8 @@ class MainWindow(object):
     color = self.window.color()
     self.control.blink(color)
 
-  def read_clock_press(self, click_arg):
-    self.control.read_clock()
-
-  def set_clock_press(self, click_arg):
-    self.control.set_clock()
-
   def get_pass_press(self, click_arg):
     self.control.get_next_pass()
-
-  def clear_alarm_press(self, click_arg):
-    self.control.clear_alarm()
-
-  def set_alarm_press(self, click_arg):
-    self.control.set_alarm()
-    
-  def get_ms_press(self, click_arg):
-    self.control.get_ms()
 
   def update_view(self):
  

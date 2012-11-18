@@ -1,0 +1,55 @@
+#!/usr/bin/python
+# -*- encoding: utf-8 -*-
+
+import gui.framework
+import device.iss_notify
+
+class OpenNotifyTest:
+
+    def __init__(self):
+        self.app = gui.framework.Application()
+        self.state = {}
+        self.view = TestWindow(self, self.state)
+        self.app.main = self.view
+        self.app.run()
+
+class TestWindow:
+
+    def __init__(self, controller, model):
+        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (600,500))
+        self.model = model
+        self.control = controller
+        self.device = device.iss_notify.ISSNotify()
+        self.init_UI()
+        self.update_view()
+        self.window.add_widgets()
+
+    def init_UI(self):
+        self.test_box       = self.window.add_box("Testing")
+        self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
+        self.read_clock_btn = self.window.add_button(self.test_box, 1, "Read Clock", self.read_clock_press)
+        self.set_clock_btn  = self.window.add_button(self.test_box, 2, "Set Clock", self.set_clock_press)
+        self.clear_alarm_btn= self.window.add_button(self.test_box, 3, "Clear Alarms", self.clear_alarm_press)
+        self.set_alarm_btn  = self.window.add_button(self.test_box, 4, "Set Alarm", self.set_alarm_press)
+        self.get_ms_btn     = self.window.add_button(self.test_box, 5, "Get ms", self.get_ms_press)
+
+    def update_view(self):
+        pass
+
+    # Events
+    # ======
+    def blink_press(self, click_arg):
+        color = self.window.color()
+    def read_clock_press(self, click_arg):
+        self.device.read_time()
+    def set_clock_press(self, click_arg):
+        self.device.set_time()
+    def clear_alarm_press(self, click_arg):
+        self.device.clear_alarm0()
+    def set_alarm_press(self, click_arg):
+       self.device.set_alarm() 
+    def get_ms_press(self, click_arg):
+        self.device.get_ms()
+
+if __name__ == "__main__":
+    run = OpenNotifyTest()

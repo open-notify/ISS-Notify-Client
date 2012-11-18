@@ -42,7 +42,7 @@ class Window(wx.Frame):
 
   def add_textbox(self, box, row, label, units):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
-    info      = wx.TextCtrl(box[0], size=(200,25))
+    info      = wx.TextCtrl(box[0], size=(200,30))
     #info.Disable()
     units     = wx.StaticText(box[0], label=units, style=wx.ALIGN_CENTRE)
     
