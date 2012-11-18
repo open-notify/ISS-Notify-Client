@@ -74,6 +74,15 @@ class OpenNotify:
         self.loc_view.update_view()
 
 
+  # Events
+  # ======
+  def sync_device(self):
+        """This should get the latest pass times, update the clock
+        and push the times to the device.
+        """
+        #TODO: All of that
+        pass
+
   #===================================================================
   def set_clock(self):
     self.device.set_time()

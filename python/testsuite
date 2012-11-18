@@ -16,7 +16,7 @@ class OpenNotifyTest:
 class TestWindow:
 
     def __init__(self, controller, model):
-        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (600,500))
+        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (200,450))
         self.model = model
         self.control = controller
         self.device = device.iss_notify.ISSNotify()
