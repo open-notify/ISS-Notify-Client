@@ -18,9 +18,11 @@ class OpenNotify:
     self.device = device.iss_notify.ISSNotify()
     self.api    = data.web.OpenNotifyAPI()
 
+    # Defaults
     self.locations = data.locations.Locations()
     self.state.location = self.locations.locations[0]
     self.state.all_locations = self.locations.locations
+    self.state.device_message = "Not Connected"
 
     self.view  = gui.views.MainWindow(self, self.state)
     self.loc_view = None
@@ -28,21 +30,27 @@ class OpenNotify:
 
     self.app.run()
 
+  # Events
+  # ======
+
   def connect(self):
     self.device.connect()
-    self.device.get_battery_status()
+    #self.device.get_status()
     
-    self.state.device_connected       = self.device.conneced
-    self.state.device_battery_message = " - " + self.device.battery_status
-    
+    self.state.device_connected = self.device.conneced
+    if self.state.device_connected:
+        self.state.device_message = "Connected"
+    else:
+        self.state.device_message = "Device not found"
+
     self.view.update_view()
 
   def get_next_pass(self):
-    self.state.next_pass = self.api.get_next_pass(self.state.location)
-    
+    p = self.api.get_next_pass(self.state.location)
+    self.state.location.passes.append(p)
     self.view.update_view()
 
-  def manage_locations(self): 
+  def manage_locations(self):
     popup = gui.views.ManageLocations(self, self.state)
     self.loc_view = popup
 
@@ -73,9 +81,6 @@ class OpenNotify:
     if self.loc_view:
         self.loc_view.update_view()
 
-
-  # Events
-  # ======
   def sync_device(self):
         """This should get the latest pass times, update the clock
         and push the times to the device.

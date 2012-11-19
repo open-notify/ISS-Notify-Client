@@ -49,9 +49,15 @@ class Locations():
 
 
 class Location():
-  def __init__(self, id):
-    self.id         = id
-    self.name       = ""
-    self.latitude   = 0.0
-    self.longitude  = 0.0
-    self.altitude   = 0
+    def __init__(self, id):
+        self.id         = id
+        self.name       = ""
+        self.latitude   = 0.0
+        self.longitude  = 0.0
+        self.altitude   = 0
+        self.passes     = []
+
+class Pass():
+    def __init__(self):
+        self.dt = {}
+        self.duration = 0.0

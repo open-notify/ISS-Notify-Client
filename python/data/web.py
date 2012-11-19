@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import urllib2
 import simplejson
-import data.locations
+import data.locations as models
 import datetime
 
 class OpenNotifyAPI:
@@ -36,8 +36,11 @@ class OpenNotifyAPI:
 
         data = simplejson.loads(response.read())
 
-        # return just a string of the next rise time
-        return self.timestr(data["response"][0]["risetime"])
+        # return the next rise time as a pass
+        p = models.Pass()
+        p.dt = datetime.datetime.fromtimestamp(int(data["response"][0]["risetime"]))
+        p.duration = float(data["response"][0]["duration"]) / 60.0
+        return p
 
     def timestr(self, unixtime):
         """Helper to convert unix timestamp to string"""

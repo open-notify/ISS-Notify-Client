@@ -4,7 +4,7 @@ import framework
 class MainWindow(object):
   
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "ISS Notify Update", (420,750))
+        self.window = framework.Window(None, "ISS Notify Update", (650,800))
         self.model = model
         self.control = controller
     
@@ -18,9 +18,9 @@ class MainWindow(object):
   
         # Device
         self.device_box     = w.add_box("Device")
-        self.device_status  = w.add_textinfo(self.device_box,  0, "Status:")
-        self.connect_btn    = w.add_button(self.device_box,    1, "Connect", self.connect_press)
-        self.sync_btn       = w.add_button(self.device_box,    2, "Sync", self.sync_press)
+        self.device_status  = w.add_textinfo(self.device_box,   0, "Status:")
+        self.connect_btn    = w.add_button(self.device_box,     1, "Connect", self.connect_press)
+        self.sync_btn       = w.add_button(self.device_box,     2, "Sync", self.sync_press)
     
         # Location
         self.location_box   = w.add_box("Location")
@@ -33,18 +33,18 @@ class MainWindow(object):
         # Passes
         self.time_box       = w.add_box("ISS Passes")
         self.current_time   = w.add_textinfo(self.time_box,     0, "Next Pass:")
-        self.get_pass_btn   = w.add_button(self.time_box,       1, "Get Next Pass", self.get_pass_press)
+        self.all_passes     = w.add_grid(self.time_box,         1, "All Passes:")
+        self.get_pass_btn   = w.add_button(self.time_box,       3, "Update Passes", self.get_pass_press)
 
 
     def update_view(self):
 
         # Device 
+        self.device_status.SetLabel(self.model.device_message)
         if self.model.device_connected:
-            self.device_status.SetLabel("Connected" + self.model.device_battery_message)
             self.connect_btn.SetLabel("...")
             self.sync_btn.Enable()
         else:
-            self.device_status.SetLabel("Not Connected")
             self.sync_btn.Disable()
  
         # Location
@@ -60,7 +60,24 @@ class MainWindow(object):
         self.current_alt.SetLabel(framework.ALTITUDE_FORMAT  % loc.altitude  +u" meters")
 
         # Passes
-        self.current_time.SetLabel(self.model.next_pass)
+        if len(loc.passes) > 0:
+            self.current_time.SetLabel(str(loc.passes[0].dt) + " UTC, for " + str(loc.passes[0].duration) + " min.")
+        else:
+            self.current_time.SetLabel("...")
+    
+        # Grid
+        
+        # Clear grid
+        self.all_passes.ClearGrid()
+        n = self.all_passes.GetNumberRows()
+        self.all_passes.DeleteRows(0,n)
+        # add data to grid
+        for i in range(len(loc.passes)):
+            p = loc.passes[i]
+            self.all_passes.AppendRows(1)
+            self.all_passes.SetCellValue(i,0,str(i+1))
+            self.all_passes.SetCellValue(i,1,str(p.dt))
+            self.all_passes.SetCellValue(i,2,str(p.duration))
 
     # Events
     # ======
@@ -92,25 +109,26 @@ class ManageLocations(object):
         self.window.add_widgets()
 
     def init_UI(self):
+        w = self.window
         # Pick Location
-        self.loc_pick_box       = self.window.add_box("")
-        self.current_loc        = self.window.add_dropdown(self.loc_pick_box, 0, "Location:", self.pick_loc)
-        self.new_loc_button     = self.window.add_button(self.loc_pick_box, 1, "New Location", self.add_new)
+        self.loc_pick_box       = w.add_box("")
+        self.current_loc        = w.add_dropdown(self.loc_pick_box, 0, "Location:", self.pick_loc)
+        self.new_loc_button     = w.add_button(self.loc_pick_box,   1, "New Location", self.add_new)
 
         # Edit Location
-        self.loc_edit_box       = self.window.add_box("Edit Location")
-        self.loc_name_field     = self.window.add_textbox(self.loc_edit_box, 0, "Name:", "")
-        self.loc_lat_field      = self.window.add_textbox(self.loc_edit_box, 1, "Latitude:", u"\xb0 N")
-        self.loc_lon_field      = self.window.add_textbox(self.loc_edit_box, 2, "Longitude:", u"\xb0 E")
-        self.loc_alt_field      = self.window.add_textbox(self.loc_edit_box, 3, "Latitdue:", "meters")
-        self.del_loc_button     = self.window.add_button(self.loc_edit_box, 4, "Delete this location", self.del_location)
+        self.loc_edit_box       = w.add_box("Edit Location")
+        self.loc_name_field     = w.add_textbox(self.loc_edit_box,  0, "Name:", "")
+        self.loc_lat_field      = w.add_textbox(self.loc_edit_box,  1, "Latitude:", u"\xb0 N")
+        self.loc_lon_field      = w.add_textbox(self.loc_edit_box,  2, "Longitude:", u"\xb0 E")
+        self.loc_alt_field      = w.add_textbox(self.loc_edit_box,  3, "Latitdue:", "meters")
+        self.del_loc_button     = w.add_button(self.loc_edit_box,   4, "Delete this location", self.del_location)
 
         # Map
-        self.map_box            = self.window.add_box("Map")
+        self.map_box            = w.add_box("Map")
 
         # Save
-        self.save_box            = self.window.add_box("Save Locations")
-        self.save_button         = self.window.add_button(self.save_box, 0, "Save", self.save_press)
+        self.save_box           = w.add_box("Save Locations")
+        self.save_button        = w.add_button(self.save_box,       0, "Save", self.save_press)
 
     def update_view(self):
         loc = self.model.location

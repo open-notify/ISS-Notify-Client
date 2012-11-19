@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import serial
 import datetime
 import time
@@ -39,22 +40,6 @@ class ISSNotify:
       print "No device"
     
     self.conneced = False
-
-  def get_battery_status(self):
-    try:
-      ser = serial.Serial(DEVICE_PORT, 9600, timeout=0.1)
-      ser.write("bat?")
-      #print "bat?"
-      line  = ser.readline()
-      if line != "":
-        print line
-        if "CHARGING" in line:
-          self.battery_status = "Battery: charging"
-        elif "CHARGED" in line:
-          self.battery_status = "Battery: charged"
-      ser.close()
-    except:
-      self.read_fail()
 
   def read_time(self):
     try:

@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 import wx
+import wx.grid as wxgrid
 import views
 import data.locations
+
 
 LATITUDE_FORMAT   = "%11.6f"
 LONGITUDE_FORMAT  = "%11.6f"
@@ -84,7 +86,26 @@ class Window(wx.Frame):
     box[1].Add(info,      pos=(row, 1), flag=wx.TOP|wx.BOTTOM, border=5)
     
     return info
-  
+
+  def add_grid(self, box, row, label):
+    labeltext = wx.StaticText(box[0], label=label)
+    grid = wxgrid.Grid(box[0], size=(500, 200))
+    grid.CreateGrid(0, 3)
+    grid.EnableScrolling(True, False)
+    grid.SetRowLabelSize(0)
+    grid.SetColSize(1, 20)
+    grid.SetColSize(1, 330)
+    grid.SetColLabelValue(0, "Pass")
+    grid.SetColLabelValue(1, "Time")
+    grid.SetColLabelValue(2, "Duration")
+    grid.EnableEditing(False)
+
+
+    box[1].Add(labeltext, pos=(row, 0))
+    box[1].Add(grid, pos=(row+1, 1), flag=wx.ALL|wx.EXPAND, border=1)
+
+    return grid
+
   def add_widgets(self):
     for section in self.sections:
       self.vbox.Add(section, flag=wx.ALL|wx.EXPAND, border=10)
@@ -131,6 +152,5 @@ class ApplicationData():
   def __init__(self):
     self.location                   = {}
     self.device_connected           = False
-    self.device_battery_message     = ""
-    self.next_pass                  = ""
+    self.device_message             = ""
     self.all_locations              = []
