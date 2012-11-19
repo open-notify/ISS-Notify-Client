@@ -46,8 +46,11 @@ class OpenNotify:
     self.view.update_view()
 
   def get_next_pass(self):
-    p = self.api.get_next_pass(self.state.location)
-    self.state.location.passes.append(p)
+    # one pass"
+    #p = self.api.get_next_pass(self.state.location)
+    #self.state.location.passes.append(p)
+    # All passes:
+    self.state.location.passes = self.api.get_passes(self.state.location, 80)
     self.view.update_view()
 
   def manage_locations(self):

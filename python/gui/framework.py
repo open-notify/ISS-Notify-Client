@@ -89,15 +89,16 @@ class Window(wx.Frame):
 
   def add_grid(self, box, row, label):
     labeltext = wx.StaticText(box[0], label=label)
-    grid = wxgrid.Grid(box[0], size=(500, 200))
+    grid = wxgrid.Grid(box[0], size=(500, 230))
     grid.CreateGrid(0, 3)
     grid.EnableScrolling(True, False)
     grid.SetRowLabelSize(0)
-    grid.SetColSize(1, 20)
-    grid.SetColSize(1, 330)
-    grid.SetColLabelValue(0, "Pass")
-    grid.SetColLabelValue(1, "Time")
-    grid.SetColLabelValue(2, "Duration")
+    grid.SetColSize(0, 55)
+    grid.SetColSize(1, 335)
+    grid.SetColSize(2, 105)
+    grid.SetColLabelValue(0, "Pass #")
+    grid.SetColLabelValue(1, "Date and Time")
+    grid.SetColLabelValue(2, "Duration [min]")
     grid.EnableEditing(False)
 
 
