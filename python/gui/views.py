@@ -37,6 +37,14 @@ class MainWindow(object):
         self.all_passes     = w.add_grid(self.time_box,         2, "All Passes:")
         self.get_pass_btn   = w.add_button(self.time_box,       4, "Update Passes", self.get_pass_press)
 
+        # Timer
+        w.add_timer(self.update_time, 1000)
+
+    def update_time(self, arg):
+        loc = self.model.location
+        if len(loc.passes) > 0:
+            self.aos.SetLabel(" -" + loc.passes[0].AOS())
+
 
     def update_view(self):
 
@@ -63,9 +71,10 @@ class MainWindow(object):
         # Passes
         if len(loc.passes) > 0:
             self.next_pass.SetLabel(str(loc.passes[0].dt) + " UTC, for %0.1f min." % loc.passes[0].duration)
-            self.aos.SetLabel(loc.passes[0].AOS())
+            self.aos.SetLabel(" -" + loc.passes[0].AOS())
         else:
             self.next_pass.SetLabel("...")
+            self.aos.SetLabel("")
     
         # Grid
         

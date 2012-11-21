@@ -17,7 +17,6 @@ class Window(wx.Frame):
                       , style = wx.DEFAULT_FRAME_STYLE|wx.NO_FULL_REPAINT_ON_RESIZE)
 
     self.container  = wx.Panel(self)
-    self.control    = self.container
     self.vbox       = wx.BoxSizer(wx.VERTICAL)
     self.sections   = []
     if onclose:
@@ -33,10 +32,10 @@ class Window(wx.Frame):
     sizer     = wx.GridBagSizer(4, 4)
 
     boxsizer.Add(sizer, flag=wx.LEFT|wx.TOP|wx.EXPAND)
-    
+
     sizer.AddGrowableCol(2)
     #widget.SetSizerAndFit(sizer)
-    
+
     wrapper.Add(boxsizer,flag=wx.ALL|wx.EXPAND)
     widget.SetSizer(wrapper)
     self.sections.append(widget)
@@ -106,6 +105,11 @@ class Window(wx.Frame):
     box[1].Add(grid, pos=(row+1, 1), flag=wx.ALL|wx.EXPAND, border=1)
 
     return grid
+
+  def add_timer(self, callback, timeout):
+    self.timer = wx.Timer(self)
+    self.Bind(wx.EVT_TIMER, callback, self.timer)        
+    self.timer.Start(timeout)
 
   def add_widgets(self):
     for section in self.sections:
