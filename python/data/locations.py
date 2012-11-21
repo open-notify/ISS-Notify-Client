@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 import json
+import datetime
+from math import fabs
 
 class Locations():
 
@@ -61,3 +63,13 @@ class Pass():
     def __init__(self):
         self.dt = {}
         self.duration = 0.0
+
+    def AOS(self):
+        diff = datetime.datetime.utcnow() - self.dt
+        diff = diff.total_seconds()
+
+        hours = int(diff / 3600.0)
+        minutes = int((diff - (hours*3600)) / 60.0)
+        seconds = diff - ((hours*3600) + (minutes*60))
+
+        return "%d:%02d:%02d" % (fabs(hours), fabs(minutes), fabs(seconds))

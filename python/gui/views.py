@@ -4,7 +4,7 @@ import framework
 class MainWindow(object):
   
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "ISS Notify Update", (650,800))
+        self.window = framework.Window(None, "ISS Notify Update", (675,800))
         self.model = model
         self.control = controller
     
@@ -32,9 +32,10 @@ class MainWindow(object):
     
         # Passes
         self.time_box       = w.add_box("ISS Passes")
-        self.current_time   = w.add_textinfo(self.time_box,     0, "Next Pass:")
-        self.all_passes     = w.add_grid(self.time_box,         1, "All Passes:")
-        self.get_pass_btn   = w.add_button(self.time_box,       3, "Update Passes", self.get_pass_press)
+        self.next_pass      = w.add_textinfo(self.time_box,     0, "Next Pass:")
+        self.aos            = w.add_textinfo(self.time_box,     1, "Time Until Next Pass:")
+        self.all_passes     = w.add_grid(self.time_box,         2, "All Passes:")
+        self.get_pass_btn   = w.add_button(self.time_box,       4, "Update Passes", self.get_pass_press)
 
 
     def update_view(self):
@@ -61,9 +62,10 @@ class MainWindow(object):
 
         # Passes
         if len(loc.passes) > 0:
-            self.current_time.SetLabel(str(loc.passes[0].dt) + " UTC, for " + str(loc.passes[0].duration) + " min.")
+            self.next_pass.SetLabel(str(loc.passes[0].dt) + " UTC, for %0.1f min." % loc.passes[0].duration)
+            self.aos.SetLabel(loc.passes[0].AOS())
         else:
-            self.current_time.SetLabel("...")
+            self.next_pass.SetLabel("...")
     
         # Grid
         
@@ -76,8 +78,8 @@ class MainWindow(object):
             p = loc.passes[i]
             self.all_passes.AppendRows(1)
             self.all_passes.SetCellValue(i,0,str(i+1))
-            self.all_passes.SetCellValue(i,1,str(p.dt))
-            self.all_passes.SetCellValue(i,2,str(p.duration))
+            self.all_passes.SetCellValue(i,1,p.dt.strftime("%A (%b. %d) %H:%M:%S UTC"))
+            self.all_passes.SetCellValue(i,2,"%4.1f" % p.duration)
 
     # Events
     # ======
