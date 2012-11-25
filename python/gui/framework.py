@@ -61,7 +61,14 @@ class Window(wx.Frame):
     self.Bind(wx.EVT_BUTTON, callback, id=button_id)
     
     return button
-  
+
+  def add_checkbox(self, box, row, label, callback):
+    labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
+    check = wx.CheckBox(box[0])
+
+    box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    box[1].Add(check,     pos=(row,1))
+
   def add_dropdown(self, box, row, label, callback):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
     combo     = wx.ComboBox(box[0])
@@ -106,6 +113,21 @@ class Window(wx.Frame):
 
     return grid
 
+  def add_image(self, box, imageFile):
+    img = wx.Image(imageFile, wx.BITMAP_TYPE_ANY)
+    img = img.Scale(500,250)
+    canvas = wx.StaticBitmap(box[0], -1, img.ConvertToBitmap(), (0,0), (500, 250))
+
+    box[1].Add(canvas, pos=(0,0))
+
+  def add_drawing(self, box, paint_event):
+    paint = wx.Panel(box[0], wx.ID_ANY, size=(500,250))
+    paint.Bind(wx.EVT_PAINT, paint_event)
+
+    box[1].Add(paint, pos=(0,0), flag=wx.TOP|wx.BOTTOM|wx.EXPAND)
+
+    return paint
+
   def add_timer(self, callback, timeout):
     self.timer = wx.Timer(self)
     self.Bind(wx.EVT_TIMER, callback, self.timer)        
@@ -142,20 +164,52 @@ class Window(wx.Frame):
   def onclose(self, arg):
     self.close_callback()
     self.Destroy()
-    
+
+
+#========================================================================
+# WX Painter Class
+#========================================================================
+class Painter:
+
+    def __init__(self, paint_event):
+        self.dc = wx.PaintDC(paint_event.GetEventObject())
+        self.dc.BeginDrawing()
+        self.dc.Clear()
+
+    def draw_map(self, mapfile):
+        imgBmap = wx.Image(mapfile, wx.BITMAP_TYPE_ANY)
+        imgBmap = imgBmap.Scale(500,250, wx.IMAGE_QUALITY_HIGH).ConvertToBitmap()
+        self.dc.DrawBitmapPoint(imgBmap, (0,0))
+
+    def draw_cross(self, pos, size):
+        self.dc.SetPen(wx.Pen(wx.RED, 1))
+        # vertical line
+        self.dc.DrawLine(pos[0], pos[1]+1, pos[0], pos[1]+size)
+        self.dc.DrawLine(pos[0], pos[1]-1, pos[0], pos[1]-size)
+        # horizontal line
+        self.dc.DrawLine(pos[0]+1, pos[1], pos[0]+size, pos[1])
+        self.dc.DrawLine(pos[0]-1, pos[1], pos[0]-size, pos[1])
+
+#========================================================================
+# WX Application
+#========================================================================
 class Application():
 
-  def __init__(self):
-    self.app  = wx.App()
-    
-  def run(self):
-    self.app.SetTopWindow(self.main.window)
-    self.app.MainLoop()
+    def __init__(self):
+        self.app  = wx.App()
 
+    def run(self):
+        self.app.SetTopWindow(self.main.window)
+        self.app.MainLoop()
+
+
+#========================================================================
+# MVC Model Data
+#========================================================================
 class ApplicationData():
-  
-  def __init__(self):
-    self.location                   = {}
-    self.device_connected           = False
-    self.device_message             = ""
-    self.all_locations              = []
+
+    def __init__(self):
+        self.location          = {}
+        self.device_connected  = False
+        self.device_message    = ""
+        self.all_locations     = []

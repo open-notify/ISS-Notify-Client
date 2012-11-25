@@ -59,6 +59,17 @@ class Location():
         self.altitude   = 0
         self.passes     = []
 
+    def scale_lat_lon(self, mapsize):
+        lon_a = mapsize[0] / 360.0
+        lon_b = lon_a * 180.0
+        
+        lat_a = -mapsize[1] / 180.0
+        lat_b = lat_a * -90.0
+
+        lat_scale = lat_a*self.latitude  + lat_b
+        lon_scale = lon_a*self.longitude + lon_b
+        return (lon_scale, lat_scale)
+
 class Pass():
     def __init__(self):
         self.dt = {}

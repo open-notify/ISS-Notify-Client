@@ -112,7 +112,7 @@ class MainWindow(object):
 class ManageLocations(object):
 
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "Manage Locations", (600,500), onclose=self.close)
+        self.window = framework.Window(None, "Manage Locations", (540,720), onclose=self.close)
         self.model = model
         self.control = controller
         self.init_UI()
@@ -132,10 +132,12 @@ class ManageLocations(object):
         self.loc_lat_field      = w.add_textbox(self.loc_edit_box,  1, "Latitude:", u"\xb0 N")
         self.loc_lon_field      = w.add_textbox(self.loc_edit_box,  2, "Longitude:", u"\xb0 E")
         self.loc_alt_field      = w.add_textbox(self.loc_edit_box,  3, "Latitdue:", "meters")
-        self.del_loc_button     = w.add_button(self.loc_edit_box,   4, "Delete this location", self.del_location)
+        self.default_check      = w.add_checkbox(self.loc_edit_box, 4, "Default Location:", self.loc_default)
+        self.del_loc_button     = w.add_button(self.loc_edit_box,   5, "Delete this location", self.del_location)
 
         # Map
         self.map_box            = w.add_box("Map")
+        self.map_draw           = w.add_drawing(self.map_box, self.on_paint)
 
         # Save
         self.save_box           = w.add_box("Save Locations")
@@ -152,6 +154,7 @@ class ManageLocations(object):
         self.loc_lat_field.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
         self.loc_lon_field.SetValue(framework.LONGITUDE_FORMAT % loc.longitude)
         self.loc_alt_field.SetValue(framework.ALTITUDE_FORMAT  % loc.altitude)
+        self.map_draw.Refresh()
 
     # Events
     #=======
@@ -181,6 +184,16 @@ class ManageLocations(object):
             return False
 
         return True
+
+    def on_paint(self, event):
+        paint = framework.Painter(event)
+        paint.draw_map("gui/resources/world.png")
+        
+        loc = self.model.location.scale_lat_lon((500,250))
+        paint.draw_cross(loc, 8)
+
+    def loc_default(self, click_arg):
+        pass
 
     def add_new(self, click_arg):
         pass
