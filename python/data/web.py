@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import urllib2
-import simplejson
+import json
 import data.locations as models
 import datetime
 
@@ -38,7 +38,7 @@ class OpenNotifyAPI:
         #print url
         #print response
 
-        data = simplejson.loads(response.read())
+        data = json.loads(response.read())
 
         # return the next rise time as a pass
         p = models.Pass()
@@ -52,7 +52,7 @@ class OpenNotifyAPI:
         url = self.build_url(location, n)
         response = urllib2.urlopen(url)
         # Read data
-        data = simplejson.loads(response.read())
+        data = json.loads(response.read())
 
         passes = []
         for entry in data["response"]:
