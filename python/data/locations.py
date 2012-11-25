@@ -3,18 +3,25 @@ import json
 import datetime
 from math import fabs
 
+#========================================================================
+# Location helper. CRUD For list of locations
+#========================================================================
 class Locations():
 
     def __init__(self):
         self.locations = []
+        self.default = 0
         self.build_list()
 
     def build_list(self):
-        # Built in location list
+        # Special non existant location
+        #self.locations.append(Location(0))
+        
+        # read in location list
         data = self.read_list('locations.json')
         if data:
             for loc in data:
-                l = Location(len(self.locations))
+                l = Location()
                 l.name      = loc['name']
                 l.latitude  = loc['latitude']
                 l.longitude = loc['longitude']
@@ -50,9 +57,11 @@ class Locations():
             pass
 
 
+#========================================================================
+# Class for as single Location
+#========================================================================
 class Location():
-    def __init__(self, id):
-        self.id         = id
+    def __init__(self):
         self.name       = ""
         self.latitude   = 0.0
         self.longitude  = 0.0
@@ -70,6 +79,10 @@ class Location():
         lon_scale = lon_a*self.longitude + lon_b
         return (lon_scale, lat_scale)
 
+
+#========================================================================
+# Class for a single ISS Pass for a location
+#========================================================================
 class Pass():
     def __init__(self):
         self.dt = {}

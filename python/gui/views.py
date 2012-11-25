@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
 import framework
 
+#========================================================================
+# Main window class
+#========================================================================
 class MainWindow(object):
   
     def __init__(self, controller, model):
@@ -108,7 +111,9 @@ class MainWindow(object):
         self.control.get_next_pass()
 
 
-#======================================================================================
+#========================================================================
+# Location Manager Class 
+#========================================================================
 class ManageLocations(object):
 
     def __init__(self, controller, model):
@@ -145,10 +150,13 @@ class ManageLocations(object):
 
     def update_view(self):
         loc = self.model.location
-    
+
         self.current_loc.Clear()
-        for location in self.model.all_locations:
-            self.current_loc.Append(location.name)
+        if len(self.model.all_locations) > 0:
+            for location in self.model.all_locations:
+                self.current_loc.Append(location.name)
+        else:
+            self.current_loc.Append("")
         self.current_loc.SetValue(loc.name)
         self.loc_name_field.SetValue(loc.name)
         self.loc_lat_field.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
@@ -161,7 +169,6 @@ class ManageLocations(object):
     def save_press(self, click_arg):
         if self.validate():
             current = {}
-            current['id']        = self.model.location.id
             current['name']      = self.loc_name_field.GetValue()
             current['latitude']  = float(self.loc_lat_field.GetValue())
             current['longitude'] = float(self.loc_lon_field.GetValue())
@@ -202,7 +209,7 @@ class ManageLocations(object):
         self.control.update_location(self.current_loc.GetValue())
 
     def del_location(self, click_arg):
-        pass
+        self.control.del_location()
 
     def close(self):
         self.control.loc_view = None

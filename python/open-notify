@@ -7,7 +7,6 @@ import data.locations
 import data.web
 import device.iss_notify
 import serial
-import random
 
 class OpenNotify:
 
@@ -32,7 +31,6 @@ class OpenNotify:
 
   # Events
   # ======
-
   def connect(self):
     self.device.connect()
     #self.device.get_status()
@@ -57,6 +55,16 @@ class OpenNotify:
     popup = gui.views.ManageLocations(self, self.state)
     self.loc_view = popup
 
+  def del_location(self):
+    self.state.all_locations.remove(self.state.location)
+    if len(self.state.all_locations) < 1:
+        self.state.location = data.locations.Location()
+        self.state.all_locations.append(self.state.location)
+    else:
+        self.state.location = self.state.all_locations[0]
+    self.view.update_view()
+    if self.loc_view:
+        self.loc_view.update_view()
 
   def update_location(self, name):
     for l in self.state.all_locations:
@@ -73,12 +81,13 @@ class OpenNotify:
     self.state.location.latitude  = newdata['latitude']
     self.state.location.longitude = newdata['longitude']
     self.state.location.altitude  = newdata['altitude']
-    self.state.all_locations[newdata['id']] = self.state.location    
+    idx = self.state.all_locations.index(self.state.location)
+    self.state.all_locations[idx] = self.state.location
 
     # Update saved locations on disk
-    self.locations.locations[newdata['id']] = self.state.location
+    self.locations.locations[idx] = self.state.location
     self.locations.save()
-    
+            
     # Push updates to screen
     self.view.update_view()
     if self.loc_view:
