@@ -41,6 +41,31 @@ class ISSNotify:
     
     self.conneced = False
 
+  def lights_color(self, c):
+    #print c
+
+    c = self.rgb2device(c)
+    
+    #print c
+    
+    try: 
+        ser = self.claim_device()
+        #print "c" + str(c)
+        ser.write("c" + str(c))
+        ser.close()
+    except:
+        self.read_fail()
+
+  def rgb2device(self, color):
+    
+    r = color[0] / 30
+    g = color[1] / 30
+    b = color[2] / 30
+    
+    c = r + (g<<4) + (b<<8)
+    
+    return c
+
   def read_time(self):
     try:
       ser = self.claim_device()

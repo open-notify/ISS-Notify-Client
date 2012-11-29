@@ -40,6 +40,7 @@ class TestWindow:
     # ======
     def blink_press(self, click_arg):
         color = self.window.color()
+        self.device.lights_color(color)
     def read_clock_press(self, click_arg):
         self.device.read_time()
     def set_clock_press(self, click_arg):
