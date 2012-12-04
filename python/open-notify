@@ -93,6 +93,10 @@ class OpenNotify:
     if self.loc_view:
         self.loc_view.update_view()
 
+  def set_default_loc(self):
+    idx = self.state.all_locations.index(self.state.location)
+    self.state.all_locations.default = idx
+
   def sync_device(self):
         """This should get the latest pass times, update the clock
         and push the times to the device.

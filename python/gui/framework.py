@@ -63,11 +63,15 @@ class Window(wx.Frame):
     return button
 
   def add_checkbox(self, box, row, label, callback):
-    labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
-    check = wx.CheckBox(box[0])
+    labeltext = wx.StaticText(box[0], label="", style=wx.ALIGN_CENTRE)
+    check = wx.CheckBox(box[0], label=label)
 
     box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
     box[1].Add(check,     pos=(row,1))
+
+    self.Bind(wx.EVT_CHECKBOX, callback)
+
+    return check
 
   def add_dropdown(self, box, row, label, callback):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)

@@ -27,6 +27,8 @@ class Locations():
                 l.longitude = loc['longitude']
                 l.altitude  = loc['alt']
                 self.locations.append(l)
+        else:
+            self.locations.append(Location())
 
     def save(self):
         data = {'locations': []}

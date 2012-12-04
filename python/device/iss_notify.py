@@ -55,6 +55,17 @@ class ISSNotify:
         ser.close()
     except:
         self.read_fail()
+  
+  def set_color(self, c):
+    c = self.rgb2device(c)
+   
+    try:
+        ser = self.claim_device()
+        print "setc"+str(c)
+        ser.write("setc"+str(c))
+        ser.close()
+    except:
+        self.read_fail()
 
   def rgb2device(self, color):
     

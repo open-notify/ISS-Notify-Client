@@ -27,11 +27,12 @@ class TestWindow:
     def init_UI(self):
         self.test_box       = self.window.add_box("Testing")
         self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
-        self.read_clock_btn = self.window.add_button(self.test_box, 1, "Read Clock", self.read_clock_press)
-        self.set_clock_btn  = self.window.add_button(self.test_box, 2, "Set Clock", self.set_clock_press)
-        self.clear_alarm_btn= self.window.add_button(self.test_box, 3, "Clear Alarms", self.clear_alarm_press)
-        self.set_alarm_btn  = self.window.add_button(self.test_box, 4, "Set Alarm", self.set_alarm_press)
-        self.get_ms_btn     = self.window.add_button(self.test_box, 5, "Get ms", self.get_ms_press)
+        self.set_color_btn  = self.window.add_button(self.test_box, 1, "Set Color", self.color_press)
+        self.read_clock_btn = self.window.add_button(self.test_box, 2, "Read Clock", self.read_clock_press)
+        self.set_clock_btn  = self.window.add_button(self.test_box, 3, "Set Clock", self.set_clock_press)
+        self.clear_alarm_btn= self.window.add_button(self.test_box, 4, "Clear Alarms", self.clear_alarm_press)
+        self.set_alarm_btn  = self.window.add_button(self.test_box, 5, "Set Alarm", self.set_alarm_press)
+        self.get_ms_btn     = self.window.add_button(self.test_box, 6, "Get ms", self.get_ms_press)
 
     def update_view(self):
         pass
@@ -41,6 +42,9 @@ class TestWindow:
     def blink_press(self, click_arg):
         color = self.window.color()
         self.device.lights_color(color)
+    def color_press(self, click_arg):
+        color = self.window.color()
+        self.device.set_color(color)
     def read_clock_press(self, click_arg):
         self.device.read_time()
     def set_clock_press(self, click_arg):

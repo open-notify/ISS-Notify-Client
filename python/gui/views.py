@@ -137,7 +137,7 @@ class ManageLocations(object):
         self.loc_lat_field      = w.add_textbox(self.loc_edit_box,  1, "Latitude:", u"\xb0 N")
         self.loc_lon_field      = w.add_textbox(self.loc_edit_box,  2, "Longitude:", u"\xb0 E")
         self.loc_alt_field      = w.add_textbox(self.loc_edit_box,  3, "Latitdue:", "meters")
-        self.default_check      = w.add_checkbox(self.loc_edit_box, 4, "Default Location:", self.loc_default)
+        self.default_check      = w.add_checkbox(self.loc_edit_box, 4, "Default Location", self.loc_default)
         self.del_loc_button     = w.add_button(self.loc_edit_box,   5, "Delete this location", self.del_location)
 
         # Map
@@ -152,11 +152,8 @@ class ManageLocations(object):
         loc = self.model.location
 
         self.current_loc.Clear()
-        if len(self.model.all_locations) > 0:
-            for location in self.model.all_locations:
-                self.current_loc.Append(location.name)
-        else:
-            self.current_loc.Append("")
+        for location in self.model.all_locations:
+            self.current_loc.Append(location.name)
         self.current_loc.SetValue(loc.name)
         self.loc_name_field.SetValue(loc.name)
         self.loc_lat_field.SetValue(framework.LATITUDE_FORMAT  % loc.latitude)
@@ -200,7 +197,8 @@ class ManageLocations(object):
         paint.draw_cross(loc, 8)
 
     def loc_default(self, click_arg):
-        pass
+        if self.default_check.GetValue():
+            self.control.set_default_loc()
 
     def add_new(self, click_arg):
         pass
