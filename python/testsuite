@@ -33,6 +33,9 @@ class TestWindow:
         self.clear_alarm_btn= self.window.add_button(self.test_box, 4, "Clear Alarms", self.clear_alarm_press)
         self.set_alarm_btn  = self.window.add_button(self.test_box, 5, "Set Alarm", self.set_alarm_press)
         self.get_ms_btn     = self.window.add_button(self.test_box, 6, "Get ms", self.get_ms_press)
+        self.set_block      = self.window.add_button(self.test_box, 7, "Set Block", self.set_block_press)
+        self.get_block      = self.window.add_button(self.test_box, 8, "Get Block", self.get_block_press)
+
 
     def update_view(self):
         pass
@@ -55,6 +58,10 @@ class TestWindow:
        self.device.set_alarm() 
     def get_ms_press(self, click_arg):
         self.device.get_ms()
+    def set_block_press(self, click_arg):
+        self.device.update_passes()
+    def get_block_press(self, clikc_arg):
+        self.device.read_block()
 
 if __name__ == "__main__":
     run = OpenNotifyTest()

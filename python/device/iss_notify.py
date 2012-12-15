@@ -157,3 +157,24 @@ class ISSNotify:
       ser.close()
     except:
       self.read_fail()
+
+  def update_passes(self):
+    try:
+        ser = self.claim_device()
+        print "z26"
+
+        ser.write("z26")
+        ser.close()
+    except:
+        self.read_fail()
+
+  def read_block(self):
+    try:
+        ser = self.claim_device()
+        print "getvalue?"
+        ser.write("getvalue?")
+        print ser.readline()
+        ser.close()
+    except:
+        self.read_fail()
+        
