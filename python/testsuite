@@ -20,21 +20,23 @@ class TestWindow:
         self.model = model
         self.control = controller
         self.device = device.iss_notify.ISSNotify()
+        self.device.verbose = True;
         self.init_UI()
         self.update_view()
         self.window.add_widgets()
 
     def init_UI(self):
         self.test_box       = self.window.add_box("Testing")
-        self.blink_btn      = self.window.add_button(self.test_box, 0, "Blink", self.blink_press)
-        self.set_color_btn  = self.window.add_button(self.test_box, 1, "Set Color", self.color_press)
-        self.read_clock_btn = self.window.add_button(self.test_box, 2, "Read Clock", self.read_clock_press)
-        self.set_clock_btn  = self.window.add_button(self.test_box, 3, "Set Clock", self.set_clock_press)
-        self.clear_alarm_btn= self.window.add_button(self.test_box, 4, "Clear Alarms", self.clear_alarm_press)
-        self.set_alarm_btn  = self.window.add_button(self.test_box, 5, "Set Alarm", self.set_alarm_press)
-        self.get_ms_btn     = self.window.add_button(self.test_box, 6, "Get ms", self.get_ms_press)
-        self.set_block      = self.window.add_button(self.test_box, 7, "Set Block", self.set_block_press)
-        self.get_block      = self.window.add_button(self.test_box, 8, "Get Block", self.get_block_press)
+        self.syn_btn        = self.window.add_button(self.test_box, 0, "SYN", self.syn_press)
+        self.blink_btn      = self.window.add_button(self.test_box, 1, "Blink", self.blink_press)
+        self.set_color_btn  = self.window.add_button(self.test_box, 2, "Set Color", self.color_press)
+        self.read_clock_btn = self.window.add_button(self.test_box, 3, "Read Clock", self.read_clock_press)
+        self.set_clock_btn  = self.window.add_button(self.test_box, 4, "Set Clock", self.set_clock_press)
+        self.clear_alarm_btn= self.window.add_button(self.test_box, 5, "Clear Alarms", self.clear_alarm_press)
+        self.set_alarm_btn  = self.window.add_button(self.test_box, 6, "Set Alarm", self.set_alarm_press)
+        self.get_ms_btn     = self.window.add_button(self.test_box, 7, "Get ms", self.get_ms_press)
+        self.set_block      = self.window.add_button(self.test_box, 8, "Set Block", self.set_block_press)
+        self.get_block      = self.window.add_button(self.test_box, 9, "Get Block", self.get_block_press)
 
 
     def update_view(self):
@@ -42,14 +44,17 @@ class TestWindow:
 
     # Events
     # ======
+    def syn_press(self, click_arg):
+        self.device.command("syn")
     def blink_press(self, click_arg):
         color = self.window.color()
         self.device.lights_color(color)
     def color_press(self, click_arg):
         color = self.window.color()
-        self.device.set_color(color)
+        color = device.iss_notify.rgb2device(color)
+        self.device.command("color", arg=str(color))
     def read_clock_press(self, click_arg):
-        self.device.read_time()
+        self.device.command("time")
     def set_clock_press(self, click_arg):
         self.device.set_time()
     def clear_alarm_press(self, click_arg):
@@ -57,7 +62,7 @@ class TestWindow:
     def set_alarm_press(self, click_arg):
        self.device.set_alarm() 
     def get_ms_press(self, click_arg):
-        self.device.get_ms()
+        self.device.command("ms")
     def set_block_press(self, click_arg):
         self.device.update_passes()
     def get_block_press(self, clikc_arg):

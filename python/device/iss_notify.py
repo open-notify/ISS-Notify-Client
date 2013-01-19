@@ -3,89 +3,13 @@ import serial
 import datetime
 import time
 
-DEVICE_PORT     = '/dev/ttyACM0'
-DEVICE_BAUD     = 9600
+DEVICE_PORT = '/dev/ttyACM1'
+DEVICE_BAUD = 9600
 
-class ISSNotify:
-
-  def __init__(self):
-    self.conneced = False
-    self.battery_status = ""
-
-  def claim_device(self):
-    s = serial.Serial(DEVICE_PORT, DEVICE_BAUD, timeout=0.1)
-    return s
-  
-  def read_fail(self):
-    print "No device"
-    self.battery_status = ""
-    self.conneced = False
-  
-  def connect(self):
-    try:
-      ser = serial.Serial(DEVICE_PORT, 9600, timeout=0.1)
-
-      ser.write("hello?")
-      #print "hello?"
-
-      line  = ser.readline()
-      if line != "":
-        #print line
-        if line[0:2] == "hi":
-          #print "connected"
-          self.conneced = True
-          return
-      ser.close()
-    except:
-      print "No device"
-    
-    self.conneced = False
-
-  def lights_color(self, c):
-    #print c
-
-    c = self.rgb2device(c)
-    
-    #print c
-    
-    try: 
-        ser = self.claim_device()
-        #print "c" + str(c)
-        ser.write("c" + str(c))
-        ser.close()
-    except:
-        self.read_fail()
-  
-  def set_color(self, c):
-    c = self.rgb2device(c)
-   
-    try:
-        ser = self.claim_device()
-        print "setc"+str(c)
-        ser.write("setc"+str(c))
-        ser.close()
-    except:
-        self.read_fail()
-
-  def rgb2device(self, color):
-    
-    r = color[0] / 30
-    g = color[1] / 30
-    b = color[2] / 30
-    
-    c = r + (g<<4) + (b<<8)
-    
-    return c
-
-  def read_time(self):
-    try:
-      ser = self.claim_device()
-      ser.write("t?")
-      line  = ser.readline()
-      if line != "":
-
+def parse_time(line):
+    if line != "":
         year = int(line[1:3])
-        
+
         # Fix 8 bit year
         if year < 70: year = year + 2000
         else: year = year + 1900
@@ -104,11 +28,62 @@ class ISSNotify:
         print "From Device:", device_time.strftime('%Y-%m-%d %H:%M:%S')
         print "Real       :", comp_time_utc.strftime('%Y-%m-%d %H:%M:%S')
         print "Difference :", diff.total_seconds()
-        
-      ser.close()
-    except:
-      self.read_fail()
 
+
+def rgb2device(color):
+    r = color[0] / 30
+    g = color[1] / 30
+    b = color[2] / 30
+    return r + (g<<4) + (b<<8)
+
+
+
+COMMANDS =  { "syn":   {"code": 'a'},
+              "ms":    {"code": 'm'},
+              "time":  {"code": 't', "parse": parse_time},
+              "color": {"code": 'c'}
+            }
+
+
+class ISSNotify:
+
+    def __init__(self):
+        self.conneced = False
+        self.verbose = False
+
+
+    def command(self, cmd, arg=None):
+        
+        c = "ISS"+COMMANDS[cmd]["code"]+"\n"
+        if arg is not None:
+            c += arg
+
+        if self.verbose:
+            print c
+
+        try: 
+            ser = self.claim_device()
+            ser.write(c)
+            line = ser.readline()
+            if self.verbose:
+                print line
+            if "parse" in COMMANDS[cmd]:
+                COMMANDS[cmd]["parse"](line)
+            ser.close()
+        except:
+            self.read_fail()
+
+
+    def claim_device(self):
+        s = serial.Serial(DEVICE_PORT, DEVICE_BAUD, timeout=0.1)
+        return s
+
+
+    def read_fail(self):
+        print "No device"
+        self.conneced = False
+
+"""
   def set_time(self):
     try:
       ser = self.claim_device()
@@ -147,23 +122,17 @@ class ISSNotify:
       ser.close()
     except:
       self.read_fail()
-
-  def get_ms(self):
-    try:
-      ser = self.claim_device()
-      print "ms?"
-      ser.write("ms?")
-      print ser.readline()
-      ser.close()
-    except:
-      self.read_fail()
-
+    
   def update_passes(self):
     try:
         ser = self.claim_device()
-        print "z26"
+        print "dumping 3 passes"
 
-        ser.write("z26")
+        ser.write("z3\n")
+        ser.write("987654321,512,")
+        ser.write("123456555,512,")
+        ser.write("1355611869,900,")
+
         ser.close()
     except:
         self.read_fail()
@@ -173,8 +142,10 @@ class ISSNotify:
         ser = self.claim_device()
         print "getvalue?"
         ser.write("getvalue?")
-        print ser.readline()
+        for i in range(10):
+            print ser.readline(),
         ser.close()
     except:
         self.read_fail()
-        
+
+    """
