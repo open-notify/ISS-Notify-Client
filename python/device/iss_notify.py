@@ -3,7 +3,7 @@ import serial
 import datetime
 import time
 
-DEVICE_PORT = '/dev/ttyACM1'
+DEVICE_PORT = '/dev/ttyACM0'
 DEVICE_BAUD = 9600
 
 def parse_time(line):
@@ -29,6 +29,8 @@ def parse_time(line):
         print "Real       :", comp_time_utc.strftime('%Y-%m-%d %H:%M:%S')
         print "Difference :", diff.total_seconds()
 
+def parse_dump(line):
+    print line.split('|')
 
 def rgb2device(color):
     r = color[0] / 30
@@ -38,10 +40,13 @@ def rgb2device(color):
 
 
 
-COMMANDS =  { "syn":   {"code": 'a'},
-              "ms":    {"code": 'm'},
-              "time":  {"code": 't', "parse": parse_time},
-              "color": {"code": 'c'}
+COMMANDS =  { "syn":     {"code": 'a'},
+              "ms":      {"code": 'm'},
+              "time":    {"code": 't', "parse": parse_time},
+              "color":   {"code": 'c'},
+              "dump":    {"code": 'd'},
+              "update":  {"code": 'u'},
+              "settime": {"code": 'T'},
             }
 
 
@@ -133,17 +138,6 @@ class ISSNotify:
         ser.write("123456555,512,")
         ser.write("1355611869,900,")
 
-        ser.close()
-    except:
-        self.read_fail()
-
-  def read_block(self):
-    try:
-        ser = self.claim_device()
-        print "getvalue?"
-        ser.write("getvalue?")
-        for i in range(10):
-            print ser.readline(),
         ser.close()
     except:
         self.read_fail()

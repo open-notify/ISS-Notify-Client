@@ -3,6 +3,7 @@
 
 import gui.framework
 import device.iss_notify
+import datetime
 
 class OpenNotifyTest:
 
@@ -56,7 +57,10 @@ class TestWindow:
     def read_clock_press(self, click_arg):
         self.device.command("time")
     def set_clock_press(self, click_arg):
-        self.device.set_time()
+        comp_time_utc = datetime.datetime.utcnow()
+        comp_time_utc = comp_time_utc + datetime.timedelta(seconds=1.2)
+        tstring = comp_time_utc.strftime('Y%yM%mD%dH%HM%MS%S')
+        self.device.command("settime", arg=tstring)
     def clear_alarm_press(self, click_arg):
         self.device.clear_alarm0()
     def set_alarm_press(self, click_arg):
@@ -64,9 +68,10 @@ class TestWindow:
     def get_ms_press(self, click_arg):
         self.device.command("ms")
     def set_block_press(self, click_arg):
-        self.device.update_passes()
+        self.device.command("update", arg="2\n987654321,512,1355611869,900,")
     def get_block_press(self, clikc_arg):
-        self.device.read_block()
+        self.device.command("dump")
+
 
 if __name__ == "__main__":
     run = OpenNotifyTest()
