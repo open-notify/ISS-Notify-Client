@@ -1,8 +1,8 @@
 ---
 layout: default
-title: ISS Noitfy Client
+title: ISS Notify Client
 ---
 
 # ISS Notify Client
 
-Docs
+Client docs.
