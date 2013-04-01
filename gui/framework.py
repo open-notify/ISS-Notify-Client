@@ -180,10 +180,9 @@ class Painter:
         self.dc.BeginDrawing()
         self.dc.Clear()
 
-    def draw_map(self, mapfile):
-        imgBmap = wx.Image(mapfile, wx.BITMAP_TYPE_ANY)
-        imgBmap = imgBmap.Scale(500,250, wx.IMAGE_QUALITY_HIGH).ConvertToBitmap()
-        self.dc.DrawBitmapPoint(imgBmap, (0,0))
+    def draw_map(self, mapimage):
+        mapimage = mapimage.Scale(500,250, wx.IMAGE_QUALITY_HIGH).ConvertToBitmap()
+        self.dc.DrawBitmapPoint(mapimage, (0,0))
 
     def draw_cross(self, pos, size):
         self.dc.SetPen(wx.Pen(wx.RED, 1))

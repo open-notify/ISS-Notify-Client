@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import framework
+import resources
 
 #========================================================================
 # Main window class
@@ -191,7 +192,7 @@ class ManageLocations(object):
 
     def on_paint(self, event):
         paint = framework.Painter(event)
-        paint.draw_map("gui/resources/world.png")
+        paint.draw_map(resources.getworldImage())
         
         loc = self.model.location.scale_lat_lon((500,250))
         paint.draw_cross(loc, 8)
