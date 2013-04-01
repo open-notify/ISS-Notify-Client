@@ -1,0 +1,14 @@
+navigation:
+- text: Home
+  url: /
+- text: API Docs
+  url: /Open-Notify-API
+- text: Source Code
+  url: https://github.com/open-notify
+- text: About
+  url: /about.html
+
+docs:
+ - text: Client Docs Home
+   url: /ISS-Notify-Client
+   name: clientdochome
