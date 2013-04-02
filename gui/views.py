@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import framework
 import resources
+from datetime import datetime
 
 #========================================================================
 # Main window class
@@ -8,7 +9,7 @@ import resources
 class MainWindow(object):
   
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "ISS Notify Update", (675,800))
+        self.window = framework.Window(None, "ISS Notify Update", (680,680))
         self.model = model
         self.control = controller
     
@@ -16,6 +17,7 @@ class MainWindow(object):
         self.update_view()
     
         self.window.add_widgets()
+
 
     def init_UI(self):
         w = self.window
@@ -36,17 +38,11 @@ class MainWindow(object):
         # Passes
         self.time_box       = w.add_box("ISS Passes")
         self.next_pass      = w.add_textinfo(self.time_box,     0, "Next Pass:")
-        self.aos            = w.add_textinfo(self.time_box,     1, "Time Until Next Pass:")
-        self.all_passes     = w.add_grid(self.time_box,         2, "All Passes:")
-        self.get_pass_btn   = w.add_button(self.time_box,       4, "Update Passes", self.get_pass_press)
+        self.all_passes     = w.add_grid(self.time_box,         1, "All Passes:")
+        self.get_pass_btn   = w.add_button(self.time_box,       2, "Update Passes", self.get_pass_press)
 
         # Timer
-        w.add_timer(self.update_time, 1000)
-
-    def update_time(self, arg):
-        loc = self.model.location
-        if len(loc.passes) > 0:
-            self.aos.SetLabel(" -" + loc.passes[0].AOS())
+        #w.add_timer(self.update_time, 1000)
 
 
     def update_view(self):
@@ -71,15 +67,15 @@ class MainWindow(object):
         self.current_alt.SetLabel(framework.ALTITUDE_FORMAT % loc.altitude + u" meters")
 
         # Passes
-        if len(loc.passes) > 0:
-            self.next_pass.SetLabel(str(loc.passes[0].dt) + " UTC, for %0.1f min." % loc.passes[0].duration)
-            self.aos.SetLabel(" -" + loc.passes[0].AOS())
+        now = datetime.utcnow()
+        for apass in loc.passes:
+            if apass.dt > now:
+                self.next_pass.SetLabel(str(apass.dt) + " UTC, for %0.1f min." % apass.duration)
+                break
         else:
             self.next_pass.SetLabel("...")
-            self.aos.SetLabel("")
     
         # Grid
-        
         # Clear grid
         self.all_passes.ClearGrid()
         n = self.all_passes.GetNumberRows()
@@ -92,8 +88,7 @@ class MainWindow(object):
             self.all_passes.SetCellValue(i,1,p.dt.strftime("%A (%b. %d) %H:%M:%S UTC"))
             self.all_passes.SetCellValue(i,2,"%4.1f" % p.duration)
 
-    # Events
-    # ======
+    # Events ============================================================
     def connect_press(self, click_arg):
         self.control.connect()
 
