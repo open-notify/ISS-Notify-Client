@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
-
 import gui.views
 import gui.framework
 import data.locations
@@ -8,140 +7,143 @@ import data.web
 import device.iss_notify
 import serial
 
+#========================================================================
+# Open Notify Client
+#========================================================================
 class OpenNotify:
 
-  def __init__(self):
+    def __init__(self):
   
-    self.app    = gui.framework.Application()
-    self.state  = gui.framework.ApplicationData()
-    self.device = device.iss_notify.ISSNotify()
-    self.api    = data.web.OpenNotifyAPI()
+        self.app    = gui.framework.Application()
+        self.state  = gui.framework.ApplicationData()
+        self.device = device.iss_notify.ISSNotify()
+        self.api    = data.web.OpenNotifyAPI()
 
-    # Defaults
-    self.locations = data.locations.Locations()
-    self.state.location = self.locations.locations[0]
-    self.state.all_locations = self.locations.locations
-    self.state.device_message = "Not Connected"
+        # Defaults
+        self.locations = data.locations.Locations()
+        self.state.location = self.locations.locations[0]
+        self.state.all_locations = self.locations.locations
+        self.state.device_message = "Not Connected"
 
-    self.view  = gui.views.MainWindow(self, self.state)
-    self.loc_view = None
-    self.app.main = self.view
+        self.view  = gui.views.MainWindow(self, self.state)
+        self.loc_view = None
+        self.app.main = self.view
 
-    self.app.run()
-
-  # Events
-  # ======
-  def connect(self):
-    self.device.connect()
-    #self.device.get_status()
-    
-    self.state.device_connected = self.device.conneced
-    if self.state.device_connected:
-        self.state.device_message = "Connected"
-    else:
-        self.state.device_message = "Device not found"
-
-    self.view.update_view()
-
-  def get_next_pass(self):
-    # one pass"
-    #p = self.api.get_next_pass(self.state.location)
-    #self.state.location.passes.append(p)
-    # All passes:
-    self.state.location.passes = self.api.get_passes(self.state.location, 80)
-    self.view.update_view()
-
-  def manage_locations(self):
-    popup = gui.views.ManageLocations(self, self.state)
-    self.loc_view = popup
-
-  def del_location(self):
-    self.state.all_locations.remove(self.state.location)
-    if len(self.state.all_locations) < 1:
-        self.state.location = data.locations.Location()
-        self.state.all_locations.append(self.state.location)
-    else:
-        self.state.location = self.state.all_locations[0]
-    self.view.update_view()
-    if self.loc_view:
-        self.loc_view.update_view()
-
-  def update_location(self, name):
-    for l in self.state.all_locations:
-        if name == l.name:
-            self.state.location = l
-            self.view.update_view()
-            if self.loc_view:
-                self.loc_view.update_view()
+        self.app.run()
 
 
-  def update_locations(self, newdata):
-    # Update state
-    self.state.location.name      = newdata['name']
-    self.state.location.latitude  = newdata['latitude']
-    self.state.location.longitude = newdata['longitude']
-    self.state.location.altitude  = newdata['altitude']
-    idx = self.state.all_locations.index(self.state.location)
-    self.state.all_locations[idx] = self.state.location
+    # Events
+    def connect(self):
+        self.device.connect()
+        #self.device.get_status()
+        
+        self.state.device_connected = self.device.conneced
+        if self.state.device_connected:
+            self.state.device_message = "Connected"
+        else:
+            self.state.device_message = "Device not found"
 
-    # Update saved locations on disk
-    self.locations.locations[idx] = self.state.location
-    self.locations.save()
-            
-    # Push updates to screen
-    self.view.update_view()
-    if self.loc_view:
-        self.loc_view.update_view()
+        self.view.update_view()
 
-  def set_default_loc(self):
-    idx = self.state.all_locations.index(self.state.location)
-    self.state.all_locations.default = idx
+    def get_next_pass(self):
+        # one pass"
+        #p = self.api.get_next_pass(self.state.location)
+        #self.state.location.passes.append(p)
+        # All passes:
+        self.state.location.passes = self.api.get_passes(self.state.location, 80)
+        self.view.update_view()
 
-  def sync_device(self):
+    def manage_locations(self):
+        popup = gui.views.ManageLocations(self, self.state)
+        self.loc_view = popup
+
+    def del_location(self):
+        self.state.all_locations.remove(self.state.location)
+        if len(self.state.all_locations) < 1:
+            self.state.location = data.locations.Location()
+            self.state.all_locations.append(self.state.location)
+        else:
+            self.state.location = self.state.all_locations[0]
+        self.view.update_view()
+        if self.loc_view:
+            self.loc_view.update_view()
+
+    def update_location(self, name):
+        for l in self.state.all_locations:
+            if name == l.name:
+                self.state.location = l
+                self.view.update_view()
+                if self.loc_view:
+                    self.loc_view.update_view()
+
+
+    def update_locations(self, newdata):
+        # Update state
+        self.state.location.name      = newdata['name']
+        self.state.location.latitude  = newdata['latitude']
+        self.state.location.longitude = newdata['longitude']
+        self.state.location.altitude  = newdata['altitude']
+        idx = self.state.all_locations.index(self.state.location)
+        self.state.all_locations[idx] = self.state.location
+
+        # Update saved locations on disk
+        self.locations.locations[idx] = self.state.location
+        self.locations.save()
+                
+        # Push updates to screen
+        self.view.update_view()
+        if self.loc_view:
+            self.loc_view.update_view()
+
+    def set_default_loc(self):
+        idx = self.state.all_locations.index(self.state.location)
+        self.state.all_locations.default = idx
+
+    def sync_device(self):
         """This should get the latest pass times, update the clock
         and push the times to the device.
         """
         #TODO: All of that
         pass
 
-  #===================================================================
-  def set_clock(self):
-    self.device.set_time()
+    #===================================================================
+    def set_clock(self):
+        self.device.set_time()
 
-  def blink(self, color):
-    
-    c = self.rgb2device(color)
-    
-    try:
-      ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
-      
-      print "c" + str(c)
-      ser.write("c" + str(c))
-      
-      print "sent command"
-      
-      """
-      for i in range(10):
-        line  = ser.readline()
-        if line != "":
-          for c in line:
-            print ord(c),
+    def blink(self, color):
+        
+        c = self.rgb2device(color)
+        
+        try:
+          ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
           
-      """
-      ser.close()
-    except:
-      print "No device"
-    #print "recieve"
+          print "c" + str(c)
+          ser.write("c" + str(c))
+          
+          print "sent command"
+          
+          """
+          for i in range(10):
+            line  = ser.readline()
+            if line != "":
+              for c in line:
+                print ord(c),
+              
+          """
+          ser.close()
+        except:
+          print "No device"
+        #print "recieve"
 
-  def rgb2device(self, color):
-    
-    r = color[0] / 30
-    g = color[1] / 30
-    b = color[2] / 30
-    
-    c = r + (g<<4) + (b<<8)
-    
-    return c
+    def rgb2device(self, color):
+        
+        r = color[0] / 30
+        g = color[1] / 30
+        b = color[2] / 30
+        
+        c = r + (g<<4) + (b<<8)
+        
+        return c
 
 if __name__ == "__main__":
     run = OpenNotify()

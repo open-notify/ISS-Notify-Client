@@ -29,10 +29,9 @@ class MainWindow(object):
         # Location
         self.location_box   = w.add_box("Location")
         self.current_loc    = w.add_dropdown(self.location_box, 0, "My Location:", self.pick_loc)
-        self.current_lat    = w.add_textinfo(self.location_box, 1, "Latitude:")
-        self.current_lon    = w.add_textinfo(self.location_box, 2, "Longitude:")
-        self.current_alt    = w.add_textinfo(self.location_box, 3, "Altitude:")
-        self.manage_loc     = w.add_button(self.location_box,   4, "Manage Locations", self.manage_loc_press)
+        self.current_lat    = w.add_textinfo(self.location_box, 1, "Latitude, Longitude:")
+        self.current_alt    = w.add_textinfo(self.location_box, 2, "Altitude:")
+        self.manage_loc     = w.add_button(self.location_box,   3, "Manage Locations", self.manage_loc_press)
     
         # Passes
         self.time_box       = w.add_box("ISS Passes")
@@ -68,9 +67,8 @@ class MainWindow(object):
             self.current_loc.Append(location.name)
         self.current_loc.SetValue(loc.name)
 
-        self.current_lat.SetLabel(framework.LATITUDE_FORMAT  % loc.latitude  +u"\xb0 N")
-        self.current_lon.SetLabel(framework.LONGITUDE_FORMAT % loc.longitude +u"\xb0 E")
-        self.current_alt.SetLabel(framework.ALTITUDE_FORMAT  % loc.altitude  +u" meters")
+        self.current_lat.SetLabel(framework.LATITUDE_FORMAT % loc.latitude + u"\xb0 N, " + framework.LONGITUDE_FORMAT % loc.longitude + u"\xb0 W")
+        self.current_alt.SetLabel(framework.ALTITUDE_FORMAT % loc.altitude + u" meters")
 
         # Passes
         if len(loc.passes) > 0:
