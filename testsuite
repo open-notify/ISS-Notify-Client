@@ -17,7 +17,7 @@ class OpenNotifyTest:
 class TestWindow:
 
     def __init__(self, controller, model):
-        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (200,450))
+        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (400,600))
         self.model = model
         self.control = controller
         self.device = device.iss_notify.ISSNotify()
@@ -39,6 +39,10 @@ class TestWindow:
         self.set_block      = self.window.add_button(self.test_box, 8, "Set Block", self.set_block_press)
         self.get_block      = self.window.add_button(self.test_box, 9, "Get Block", self.get_block_press)
 
+        self.white_box      = self.window.add_box("White Balance")
+        self.red            = self.window.add_slider(self.white_box, 0, "Red", self.red_slide)
+        self.green          = self.window.add_slider(self.white_box, 1, "Green", self.green_slide)
+        self.blue           = self.window.add_slider(self.white_box, 2, "Blue", self.blue_slide)
 
     def update_view(self):
         pass
@@ -71,6 +75,13 @@ class TestWindow:
         self.device.command("update", arg="2\n987654321,512,1355611869,900,")
     def get_block_press(self, clikc_arg):
         self.device.command("dump")
+    def red_slide(self, args):
+        self.device.command("wb_red", chr(self.red.Value))
+    def green_slide(self, args):
+        self.device.command("wb_green", chr(self.green.Value))
+    def blue_slide(self, args):
+        self.device.command("wb_blue", chr(self.blue.Value))
+
 
 
 if __name__ == "__main__":

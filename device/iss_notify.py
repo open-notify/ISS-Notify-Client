@@ -47,6 +47,9 @@ COMMANDS =  { "syn":     {"code": 'a'},
               "dump":    {"code": 'd'},
               "update":  {"code": 'u'},
               "settime": {"code": 'T'},
+              "wb_red":  {"code": 'r'},
+              "wb_green":{"code": 'g'},
+              "wb_blue": {"code": 'b'},
             }
 
 
