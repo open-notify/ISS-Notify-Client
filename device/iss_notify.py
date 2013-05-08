@@ -1,10 +1,16 @@
 # -*- encoding: utf-8 -*-
 import serial
+import serial.tools.list_ports
 import datetime
 import time
 
 DEVICE_PORT = '/dev/ttyACM0'
 DEVICE_BAUD = 9600
+
+def list_ports():
+    comports = serial.tools.list_ports.comports()
+    for port in comports:
+        print port
 
 def parse_time(line):
     if line != "":

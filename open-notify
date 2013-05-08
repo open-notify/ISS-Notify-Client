@@ -24,6 +24,8 @@ class OpenNotify:
         self.state.location = self.locations.locations[0]
         self.state.all_locations = self.locations.locations
         self.state.device_message = "Not Connected"
+        self.state.devices = ["/dev/ttyACM0", "/dev/tty0"]
+        device.iss_notify.list_ports()
 
         self.view  = gui.views.MainWindow(self, self.state)
         self.loc_view = None

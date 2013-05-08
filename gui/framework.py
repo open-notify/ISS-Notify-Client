@@ -7,7 +7,7 @@ import data.locations
 
 LATITUDE_FORMAT   = "%11.6f"
 LONGITUDE_FORMAT  = "%11.6f"
-ALTITUDE_FORMAT   = "%0.0f"
+ALTITUDE_FORMAT   = "%4.0f"
 
 class Window(wx.Frame):
 
@@ -52,6 +52,20 @@ class Window(wx.Frame):
     box[1].Add(units,     pos=(row, 2), flag=wx.TOP|wx.BOTTOM, border=5)
     
     return info
+
+  def add_connector(self, box, row, btn_callback, dd_callback):
+    button    = wx.Button(box[0], label="Connect")
+    button_id = button.GetId()
+    combo     = wx.ComboBox(box[0])
+    combo_id  = combo.GetId()
+
+    box[1].Add(button, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
+    box[1].Add(combo,     pos=(row, 1), span=(1,2), flag=wx.TOP|wx.BOTTOM|wx.EXPAND, border=5)
+
+    self.Bind(wx.EVT_BUTTON, btn_callback, id=button_id)
+    self.Bind(wx.EVT_COMBOBOX, dd_callback, id=combo_id)
+
+    return combo
   
   def add_button(self, box, row, label, callback):
     button    = wx.Button(box[0], label=label)
@@ -76,11 +90,12 @@ class Window(wx.Frame):
   def add_dropdown(self, box, row, label, callback):
     labeltext = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
     combo     = wx.ComboBox(box[0])
+    combo_id  = combo.GetId()
     
     box[1].Add(labeltext, pos=(row, 0), flag=wx.TOP|wx.BOTTOM, border=5)
     box[1].Add(combo,     pos=(row, 1), span=(1,2), flag=wx.TOP|wx.BOTTOM|wx.EXPAND, border=5)
 
-    self.Bind(wx.EVT_COMBOBOX, callback)
+    self.Bind(wx.EVT_COMBOBOX, callback, id=combo_id)
 
     return combo
   
@@ -193,6 +208,7 @@ class Painter:
         self.dc.DrawLine(pos[0]+1, pos[1], pos[0]+size, pos[1])
         self.dc.DrawLine(pos[0]-1, pos[1], pos[0]-size, pos[1])
 
+
 #========================================================================
 # WX Application
 #========================================================================
@@ -215,4 +231,5 @@ class ApplicationData():
         self.location          = {}
         self.device_connected  = False
         self.device_message    = ""
+        self.devices           = []
         self.all_locations     = []

@@ -25,7 +25,7 @@ class MainWindow(object):
         # Device
         self.device_box     = w.add_box("Device")
         self.device_status  = w.add_textinfo(self.device_box,   0, "Status:")
-        self.connect_btn    = w.add_button(self.device_box,     1, "Connect", self.connect_press)
+        self.connect        = w.add_connector(self.device_box,  1, self.connect_press, self.pick_comm)
         self.sync_btn       = w.add_button(self.device_box,     2, "Sync", self.sync_press)
     
         # Location
@@ -50,10 +50,16 @@ class MainWindow(object):
         # Device 
         self.device_status.SetLabel(self.model.device_message)
         if self.model.device_connected:
-            self.connect_btn.SetLabel("...")
+            #self.connect_btn.SetLabel("...")
             self.sync_btn.Enable()
         else:
             self.sync_btn.Disable()
+
+        self.connect.Clear()
+        for port in self.model.devices:
+            self.connect.Append(port)
+        self.connect.SetValue(self.model.devices[0])
+
  
         # Location
         loc = self.model.location
@@ -88,9 +94,13 @@ class MainWindow(object):
             self.all_passes.SetCellValue(i,1,p.dt.strftime("%A (%b. %d) %H:%M:%S UTC"))
             self.all_passes.SetCellValue(i,2,"%4.1f" % p.duration)
 
+
     # Events ============================================================
     def connect_press(self, click_arg):
         self.control.connect()
+
+    def pick_comm(self, arg):
+        print arg
 
     def sync_press(self, click_arg):
         self.control.sync_device()
@@ -111,7 +121,7 @@ class MainWindow(object):
 class ManageLocations(object):
 
     def __init__(self, controller, model):
-        self.window = framework.Window(None, "Manage Locations", (540,720), onclose=self.close)
+        self.window = framework.Window(None, "Manage Locations", (540,740), onclose=self.close)
         self.model = model
         self.control = controller
         self.init_UI()
