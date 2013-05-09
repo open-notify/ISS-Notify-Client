@@ -56,6 +56,7 @@ COMMANDS =  { "syn":     {"code": 'a'},
               "wb_red":  {"code": 'r'},
               "wb_green":{"code": 'g'},
               "wb_blue": {"code": 'b'},
+              "wb_set":  {"code": 'W'},
             }
 
 

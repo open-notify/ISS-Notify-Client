@@ -17,7 +17,7 @@ class OpenNotifyTest:
 class TestWindow:
 
     def __init__(self, controller, model):
-        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (400,600))
+        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (400,680))
         self.model = model
         self.control = controller
         self.device = device.iss_notify.ISSNotify()
@@ -40,9 +40,10 @@ class TestWindow:
         self.get_block      = self.window.add_button(self.test_box, 9, "Get Block", self.get_block_press)
 
         self.white_box      = self.window.add_box("White Balance")
-        self.red            = self.window.add_slider(self.white_box, 0, "Red", self.red_slide)
-        self.green          = self.window.add_slider(self.white_box, 1, "Green", self.green_slide)
-        self.blue           = self.window.add_slider(self.white_box, 2, "Blue", self.blue_slide)
+        self.red            = self.window.add_slider(self.white_box, 0, "Red", self.red_slide, 127)
+        self.green          = self.window.add_slider(self.white_box, 1, "Green", self.green_slide, 40)
+        self.blue           = self.window.add_slider(self.white_box, 2, "Blue", self.blue_slide, 34)
+        self.set_wb         = self.window.add_button(self.white_box, 3, "Set WB", self.set_wb)
 
     def update_view(self):
         pass
@@ -76,12 +77,13 @@ class TestWindow:
     def get_block_press(self, clikc_arg):
         self.device.command("dump")
     def red_slide(self, args):
-        self.device.command("wb_red", chr(self.red.Value))
+        self.device.command("wb_red", str(self.red.Value))
     def green_slide(self, args):
-        self.device.command("wb_green", chr(self.green.Value))
+        self.device.command("wb_green", str(self.green.Value))
     def blue_slide(self, args):
-        self.device.command("wb_blue", chr(self.blue.Value))
-
+        self.device.command("wb_blue", str(self.blue.Value))
+    def set_wb(self, args):
+        self.device.command("wb_set", str(self.blue.Value)+','+str(self.green.Value)+','+str(self.red.Value))
 
 
 if __name__ == "__main__":

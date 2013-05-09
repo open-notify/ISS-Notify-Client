@@ -147,9 +147,9 @@ class Window(wx.Frame):
 
     return paint
 
-  def add_slider(self, box, row, label, callback):
+  def add_slider(self, box, row, label, callback, deflt=127):
     label = wx.StaticText(box[0], label=label, style=wx.ALIGN_CENTRE)
-    slide = wx.Slider(box[0], wx.ID_ANY, 255, 0, 255, wx.DefaultPosition, (250, -1), wx.SL_AUTOTICKS | wx.SL_HORIZONTAL | wx.SL_LABELS)
+    slide = wx.Slider(box[0], wx.ID_ANY, deflt, 0, 127, wx.DefaultPosition, (250, -1), wx.SL_AUTOTICKS | wx.SL_HORIZONTAL | wx.SL_LABELS)
     slide_id = slide.GetId()
 
     self.Bind(wx.EVT_SCROLL, callback, id=slide_id)
