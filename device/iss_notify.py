@@ -39,10 +39,10 @@ def parse_dump(line):
     print line.split('|')
 
 def rgb2device(color):
-    r = color[0] / 30
-    g = color[1] / 30
-    b = color[2] / 30
-    return r + (g<<4) + (b<<8)
+    r = color[0] * 257
+    g = color[1] * 257
+    b = color[2] * 257
+    return "%d,%d,%d" % (b,g,r)
 
 
 
@@ -57,6 +57,8 @@ COMMANDS =  { "syn":     {"code": 'a'},
               "wb_green":{"code": 'g'},
               "wb_blue": {"code": 'b'},
               "wb_set":  {"code": 'W'},
+              "blink":   {"code": 'l'},
+              "bow":     {"code": 'x'},
             }
 
 

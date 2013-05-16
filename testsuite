@@ -17,7 +17,7 @@ class OpenNotifyTest:
 class TestWindow:
 
     def __init__(self, controller, model):
-        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (400,680))
+        self.window = gui.framework.Window(None, "ISS Notify Test Suite", (400,700))
         self.model = model
         self.control = controller
         self.device = device.iss_notify.ISSNotify()
@@ -38,6 +38,8 @@ class TestWindow:
         self.get_ms_btn     = self.window.add_button(self.test_box, 7, "Get ms", self.get_ms_press)
         self.set_block      = self.window.add_button(self.test_box, 8, "Set Block", self.set_block_press)
         self.get_block      = self.window.add_button(self.test_box, 9, "Get Block", self.get_block_press)
+        self.get_block      = self.window.add_button(self.test_box,10, "Rainbow", self.rainbow_press)
+
 
         self.white_box      = self.window.add_box("White Balance")
         self.red            = self.window.add_slider(self.white_box, 0, "Red", self.red_slide, 127)
@@ -54,7 +56,8 @@ class TestWindow:
         self.device.command("syn")
     def blink_press(self, click_arg):
         color = self.window.color()
-        self.device.lights_color(color)
+        color = device.iss_notify.rgb2device(color)
+        self.device.command("blink", color)
     def color_press(self, click_arg):
         color = self.window.color()
         color = device.iss_notify.rgb2device(color)
@@ -84,6 +87,9 @@ class TestWindow:
         self.device.command("wb_blue", str(self.blue.Value))
     def set_wb(self, args):
         self.device.command("wb_set", str(self.blue.Value)+','+str(self.green.Value)+','+str(self.red.Value))
+    def rainbow_press(self, click_arg):
+       self.device.command("bow")
+
 
 
 if __name__ == "__main__":
